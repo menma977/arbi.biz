@@ -22,6 +22,7 @@ class Setting extends Model
    */
   protected $fillable = [
     'maintenance',
+    'logging',
     'version',
   ];
 }

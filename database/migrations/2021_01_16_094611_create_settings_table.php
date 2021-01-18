@@ -16,6 +16,7 @@ class CreateSettingsTable extends Migration
     Schema::create('settings', function (Blueprint $table) {
       $table->id();
       $table->boolean("maintenance")->default(false);
+      $table->integer("logging")->default(1);
       $table->integer("version")->default(1);
       $table->timestamps();
     });
