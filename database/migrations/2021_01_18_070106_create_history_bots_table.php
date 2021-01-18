@@ -15,6 +15,7 @@ class CreateHistoryBotsTable extends Migration
   {
     Schema::create('history_bots', function (Blueprint $table) {
       $table->timestamps();
+      $table->bigInteger('user_id')->index();
       $table->integer('bot')->default(1);
       $table->decimal('pay_in', 12, 8);
       $table->decimal('pay_out', 12, 8);

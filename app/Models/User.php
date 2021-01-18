@@ -12,6 +12,8 @@ use phpDocumentor\Reflection\Types\Boolean;
  * Class User
  * @package App\Models
  * @property integer id
+ * @property string name
+ * @property string email
  * @property string username
  * @property string password
  * @property string password_mirror

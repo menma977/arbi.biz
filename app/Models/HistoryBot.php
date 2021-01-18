@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Models
  * @property string created_at
  * @property string updated_at
+ * @property integer user_id
  * @property integer bot
  * @property double pay_in
  * @property double pay_out
@@ -27,6 +28,7 @@ class HistoryBot extends Model
    * @var array
    */
   protected $fillable = [
+    'user_id',
     'bot',
     'pay_in',
     'pay_out',
