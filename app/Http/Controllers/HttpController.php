@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ListUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class HttpController extends Controller
 {
-  public function post($url, $body)
+  static public function post($body)
   {
+    $url = ListUrl::where("block", false)->first();
+    if (!$url) return false;
     $post = Http::asForm()->withHeaders([
       'referer' => 'https://arbi.biz/',
       'origin' => 'https://arbi.biz/'
