@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 
 class HttpController extends Controller
 {
-  static public function post($body)
+  public function post($body)
   {
     $url = ListUrl::where("block", false)->first();
     if (!$url) return false;
