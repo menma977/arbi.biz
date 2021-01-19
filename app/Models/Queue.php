@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ListUrl
+ * Class Queue
  * @package App\Models
  * @property string created_at
  * @property string updated_at
- * @property string url
- * @property string block
- * @property string start_at
+ * @property integer user_id
+ * @property string type //it, buy_wall, sponsor
+ * @property string value
+ * @property boolean send
  */
-class ListUrl extends Model
+class Queue extends Model
 {
   use HasFactory;
 
@@ -24,8 +25,9 @@ class ListUrl extends Model
    * @var array
    */
   protected $fillable = [
-    'url',
-    'block',
-    'start_at',
+    'user_id',
+    'type',
+    'value',
+    'send',
   ];
 }
