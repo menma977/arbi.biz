@@ -45,6 +45,8 @@ class HttpController
         $data->push('data', []);
         break;
       case str_contains($post->body(), 'IP are blocked for 2 minutes.') === true:
+        $url->block = true;
+        $url->save();
         $data->push('code', 500);
         $data->push('message', 'server has been blocked');
         $data->push('data', []);
