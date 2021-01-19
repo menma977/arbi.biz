@@ -115,4 +115,65 @@ class HttpController
 
     return $data;
   }
+
+  /**
+   * @param $wallet
+   * @return Collection
+   */
+  public static function checkWallet($wallet)
+  {
+    $get = Http::get("https://sochain.com/api/v2/is_address_valid/DOGE/$wallet");
+    $data = new Collection();
+
+    if ($get->serverError()) {
+      $data->push('code', 500);
+      $data->push('message', 'server error code 500');
+      $data->push('data', []);
+    } else if ($get->clientError()) {
+      $data->push('code', 401);
+      $data->push('message', 'client error code 401');
+      $data->push('data', []);
+    } else if ($get["status"] === "success") {
+      if ($get["data"]["is_valid"] == true) {
+        $data->push('code', 200);
+        $data->push('message', 'valid wallet');
+        $data->push('data', $get["data"]["address"]);
+      } else {
+        $data->push('code', 401);
+        $data->push('message', 'Invalid wallet');
+        $data->push('data', $get["data"]["address"]);
+      }
+    } else {
+      $data->push('code', 500);
+      $data->push('message', 'wallet required');
+      $data->push('data', []);
+    }
+
+    return $data;
+  }
+
+  /**
+   * @return Collection
+   */
+  public static function dogePrice()
+  {
+    $get = Http::get("https://indodax.com/api/ticker/dogeidr");
+    $data = new Collection();
+
+    if ($get->serverError()) {
+      $data->push('code', 500);
+      $data->push('message', 'server error code 500');
+      $data->push('data', []);
+    } else if ($get->clientError()) {
+      $data->push('code', 401);
+      $data->push('message', 'client error code 401');
+      $data->push('data', []);
+    } else {
+      $data->push('code', 200);
+      $data->push('message', 'successful');
+      $data->push('data', $get["ticker"]["buy"]);
+    }
+
+    return $data;
+  }
 }
