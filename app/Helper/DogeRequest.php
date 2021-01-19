@@ -9,11 +9,15 @@ class DogeRequest
 {
   static private $key = "";
 
-  static function post($action, $body = [], $needKey = true)
+  public static function post($action, $body = [], $needKey = true)
   {
     $url = ListUrl::where("block", false)->first();
-    if (!$url) return false;
-    if ($needKey) $body["Key"] = DogeRequest::$key;
+    if (!$url) {
+      return false;
+    }
+    if ($needKey) {
+      $body["Key"] = self::$key;
+    }
     $body["a"] = $action;
     $post = Http::asForm()->withHeaders([
       'referer' => 'https://arbi.biz/',
