@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ListUrl;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
@@ -46,6 +47,7 @@ class HttpController
         break;
       case str_contains($post->body(), 'IP are blocked for 2 minutes.') === true:
         $url->block = true;
+        $url->start_at = Carbon::now();
         $url->save();
         $data->push('code', 500);
         $data->push('message', 'server has been blocked');
