@@ -37,6 +37,7 @@ class AuthController extends Controller
         }
         if ($user = Auth::user()) {
           Logger::info($request->username . " Successfully Login but return invalid user");
+          $user->token = $user->createToken('API.')->accessToken;
           // TODO: Additional Login value
           response()->json([
             "code" => 200,
