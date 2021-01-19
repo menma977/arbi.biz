@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ListUrl;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class HttpController
@@ -13,13 +14,13 @@ class HttpController
    * @param $action
    * @param $body
    * @param bool $needKey
-   * @return array
+   * @return Collection
    */
   public static function post($action, $body, $needKey = true)
   {
     $url = ListUrl::where("block", false)->first();
     if (!$url) {
-      return ['code' => 400, 'message' => 'blocked'];
+      return collect(['code' => 400, 'message' => 'blocked']);
     }
     if ($needKey) {
       $body["Key"] = self::$key;
@@ -30,37 +31,86 @@ class HttpController
       'origin' => 'https://arbi.biz/'
     ])->post($url, $body);
 
+    $data = new Collection();
+
     switch ($post) {
       case $post->serverError():
-        return ['code' => 500, 'message' => 'server error code 500'];
+        $data->push('code', 500);
+        $data->push('message', 'server error code 500');
+        $data->push('data', []);
+        break;
       case $post->clientError():
-        return ['code' => 401, 'message' => 'client error code 401'];
+        $data->push('code', 401);
+        $data->push('message', 'client error code 401');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'IP are blocked for 2 minutes.') === true:
-        return ['code' => 500, 'message' => 'server has been blocked'];
+        $data->push('code', 500);
+        $data->push('message', 'server has been blocked');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'ChanceTooHigh') === true:
-        return ['code' => 400, 'message' => 'Chance Too High'];
+        $data->push('code', 400);
+        $data->push('message', 'Chance Too High');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'ChanceTooLow') === true:
-        return ['code' => 400, 'message' => 'Chance Too Low'];
+        $data->push('code', 400);
+        $data->push('message', 'Chance Too Low');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'InsufficientFunds') === true:
-        return ['code' => 400, 'message' => 'Insufficient Funds'];
+        $data->push('code', 400);
+        $data->push('message', 'Insufficient Funds');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'NoPossibleProfit') === true:
-        return ['code' => 400, 'message' => 'No Possible Profit'];
+        $data->push('code', 400);
+        $data->push('message', 'No Possible Profit');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'MaxPayoutExceeded') === true:
-        return ['code' => 400, 'message' => 'Max Payout Exceeded'];
+        $data->push('code', 400);
+        $data->push('message', 'Max Payout Exceeded');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), '999doge') === true:
-        return ['code' => 400, 'message' => 'Invalid request On Server Wait 5 minute to try again'];
+        $data->push('code', 400);
+        $data->push('message', 'Invalid request On Server Wait 5 minute to try again');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'error') === true:
-        return ['code' => 400, 'message' => 'Invalid request'];
+        $data->push('code', 400);
+        $data->push('message', 'Invalid request');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'TooFast') === true:
-        return ['code' => 400, 'message' => 'Too Fast'];
+        $data->push('code', 400);
+        $data->push('message', 'Too Fast');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'TooSmall') === true:
-        return ['code' => 400, 'message' => 'Too Small'];
+        $data->push('code', 400);
+        $data->push('message', 'Too Small');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'LoginRequired') === true:
-        return ['code' => 400, 'message' => 'Login Required'];
+        $data->push('code', 400);
+        $data->push('message', 'Login Required');
+        $data->push('data', []);
+        break;
       case str_contains($post->body(), 'InvalidApiKey') === true:
-        return ['code' => 400, 'message' => 'key you provided is invalid'];
+        $data->push('code', 400);
+        $data->push('message', 'key you provided is invalid');
+        $data->push('data', []);
+        break;
       default:
-        return ['code' => 200, 'data' => $post->json()];
+        $data->push('code', 200);
+        $data->push('message', 'successful');
+        $data->push('data', collect($post->json()));
+        break;
     }
+
+    return $data;
   }
 }
