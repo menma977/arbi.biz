@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helper\DogeRequest;
 use App\Helper\Logger;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HttpController;
 use App\Models\CoinAuth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,18 +25,38 @@ class AuthController extends Controller
     } else {
       $type = 'username';
     }
-    Logger::info("Register: " . $request->username . " attempt to login from (" . $request->ip() . ")");
+    Logger::info("Login: " . $request->username . " attempt to login from (" . $request->ip() . ")");
     $request->validate([
       "username" => "required|string|in:users,$type",
       "password" => "required"
     ]);
     try {
+      if (Auth::user()->suspend) {
+        Logger::info("Login: " . $request->ip() . " trying with suspended account " . $request->ip);
+        return response()->json(["code" => 400, "message" => "Your account currently suspended"]);
+      }
       if (Auth::attempt([$type => $request->username, 'password' => $request->password])) {
-        Logger::info("Register: " . $request->username . " successful login from (" . $request->ip() . ")");
+        Logger::info("Login: " . $request->username . " successful login from (" . $request->ip() . ")");
         foreach (Auth::user()->tokens as $id => $item) {
           $item->delete();
         }
         if ($user = Auth::user()) {
+          $coinAccount = CoinAuth::where("user_id", "=", $user->id)->first();
+          $updatedAt = Carbon::parse($coinAccount->updated_at);
+          if ($updatedAt->subMonth()->diffInDays(Carbon::now()) >= 30) {
+            Logger::info("Login: Refreshing 999doge Cookie for" . $user->username);
+            $dogeRes = HttpController::post("Login", [
+              "Username" => $coinAccount->username,
+              "Password" => $coinAccount->password
+            ]);
+            if ($dogeRes->code == 200) {
+              $coinAccount->cookie = $dogeRes["data"]["SessionCookie"];
+              $coinAccount->save();
+              Logger::info("Login: Updating 999doge Cookie from" . $user->username);
+            } else {
+              Logger::info("Login: Fail to update 999doge Cookie from" . $user->username);
+            }
+          }
           Logger::info($request->username . " Successfully Login but return invalid user");
           $user->token = $user->createToken('API.')->accessToken;
           // TODO: Additional Login value
@@ -49,10 +69,11 @@ class AuthController extends Controller
               "tradeFake" => $user->trade_fake,
               "tradeReal" => $user->trade_real,
               "isSuspended" => $user->suspend,
+              "cookie" => $coinAccount->cookie,
             ]
           ]);
         } else {
-          Logger::error("Register: " . $request->username . " Successfully Login but return invalid user");
+          Logger::error("Login: " . $request->username . " Successfully Login but return invalid user");
           return response()->json(['code' => 500, 'message' => 'Invalid user'], 500);
         }
       } else {
@@ -81,19 +102,19 @@ class AuthController extends Controller
       }]
     ]);
     try {
-      $dogeAccount = DogeRequest::post("CreateAccount");
+      $dogeAccount = HttpController::post("CreateAccount");
       if ($dogeAccount["code"] < 400) {
         $dogeAccount = $dogeAccount["data"];
         $username_coin = $this->randomStr();
         $password_coin = $this->randomStr();
-        $dogeUser = DogeRequest::post("CreateUser", [
+        $dogeUser = HttpController::post("CreateUser", [
           "s" => $dogeAccount["SessionCookie"],
           "username" => $username_coin,
           "password" => $password_coin
         ]);
         if ($dogeUser["code"] < 400) {
           $dogeUser = $dogeUser["data"];
-          $wallet = DogeRequest::post("GetDepositAddress", ['s' => $dogeAccount["SessionCookie"], 'Currency' => "doge"]);
+          $wallet = HttpController::post("GetDepositAddress", ['s' => $dogeAccount["SessionCookie"], 'Currency' => "doge"]);
           if ($wallet["code"] < 400) {
             $wallet = $wallet["data"];
             $user = new User([
@@ -137,7 +158,7 @@ class AuthController extends Controller
     }
   }
 
-  public function logout()
+  public function logout(Request $request)
   {
     Logger::warning("Logout: attempt from " . Auth::user()->username . "(" . $request->ip() . ") failed at creating Doge Account");
     foreach (Auth::user()->tokens as $key => $value) {
