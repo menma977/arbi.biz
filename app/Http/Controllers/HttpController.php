@@ -136,7 +136,7 @@ class HttpController
       $data->push('message', 'client error code 401');
       $data->push('data', []);
     } else if ($get["status"] === "success") {
-      if ($get["data"]["is_valid"] == true) {
+      if ($get["data"]["is_valid"] === true) {
         $data->push('code', 200);
         $data->push('message', 'valid wallet');
         $data->push('data', $get["data"]["address"]);
