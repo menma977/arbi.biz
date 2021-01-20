@@ -144,7 +144,7 @@ class AuthController extends Controller
 
   public function logout()
   {
-    Logger::warning("Logout: attempt from " . Auth::user()->username . "(" . $request->ip() . ") failed at creating Doge Account");
+    Logger::warning("Logout: attempt from " . Auth::user()->username . " failed at creating Doge Account");
     foreach (Auth::user()->tokens as $key => $value) {
       $value->delete();
     }
