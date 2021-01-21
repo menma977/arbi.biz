@@ -8,8 +8,30 @@ use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 
-class ToolController extends Controller
+class ToolController
 {
+  /**
+   * @param $user_id
+   * @param $value
+   * @param $username
+   */
+  public static function register($user_id, $value, $username)
+  {
+    $user = User::find($user_id);
+
+    $ticket = new Ticket();
+    $ticket->user_id = $user->id;
+    $ticket->description = "register new user with username : $username";
+    $ticket->credit = $value;
+    $ticket->save();
+
+    $historyTicket = new HistoryPin();
+    $historyTicket->user_id = $user->id;
+    $historyTicket->description = "register new user with username : $username";
+    $historyTicket->value = $value;
+    $historyTicket->save();
+  }
+
   /**
    * @param $user_id
    * @param $target_id
