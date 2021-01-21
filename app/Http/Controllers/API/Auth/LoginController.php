@@ -22,23 +22,21 @@ class LoginController extends Controller
   {
     if (filter_var($request->username, FILTER_VALIDATE_EMAIL)) {
       $type = 'email';
-    } else if (filter_var($request->username, FILTER_VALIDATE_INT)) {
-      $type = 'phone';
     } else {
       $type = 'username';
     }
     Logger::info("Login: " . $request->username . " attempt to login from (" . $request->ip() . ")");
     $request->validate([
-      "username" => "required|string|in:users,$type",
+      "username" => "required|string",
       "password" => "required"
     ]);
     try {
-      if (Auth::user()->suspend) {
-        Logger::info("Login: " . $request->ip() . " trying with suspended account " . $request->ip);
-        return response()->json(["code" => 400, "message" => "Your account currently suspended"]);
-      }
       if (Auth::attempt([$type => $request->username, 'password' => $request->password])) {
         Logger::info("Login: " . $request->username . " successful login from (" . $request->ip() . ")");
+        if (Auth::user()->suspend) {
+          Logger::info("Login: " . $request->ip() . " trying with suspended account " . $request->ip);
+          return response()->json(["code" => 400, "message" => "Your account currently suspended"]);
+        }
         foreach (Auth::user()->tokens as $id => $item) {
           $item->delete();
         }
@@ -50,8 +48,9 @@ class LoginController extends Controller
             $dogeRes = HttpController::post("Login", [
               "Username" => $coinAccount->username,
               "Password" => $coinAccount->password
-            ]);
-            if ($dogeRes->code == 200) {
+            ], true);
+            Logger::info($dogeRes);
+            if ($dogeRes["code"] == 200) {
               $coinAccount->cookie = $dogeRes["data"]["SessionCookie"];
               $coinAccount->save();
               Logger::info("Login: Updating 999doge Cookie from" . $user->username);
@@ -60,17 +59,17 @@ class LoginController extends Controller
             }
           }
           Logger::info($request->username . " Successfully Login but return invalid user");
-          $user->token = $user->createToken('API.')->accessToken;
-          // TODO: Additional Login value
+          // TODO: Change token name
+          $user->token = $user->createToken('API.' . $user->username)->accessToken;
           return response()->json([
             "code" => 200,
             "user" => [
               "username" => $user->username,
               "email" => $user->email,
-              "phone" => $user->phone,
-              "tradeFake" => Carbon::parse($coinAccount->trade_fake)->diffInDays(Carbon::now()) > 0,
-              "tradeReal" => Carbon::parse($coinAccount->trade_real)->diffInDays(Carbon::now()) > 0,
+              "hasTradedReal" => Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) > 0,
+              "hasTradedFake" => Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) > 0,
               "isSuspended" => $user->suspend,
+              "token" => $user->token,
               "cookie" => $coinAccount->cookie,
             ]
           ]);
