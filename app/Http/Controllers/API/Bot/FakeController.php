@@ -133,9 +133,9 @@ class FakeController extends Controller
 
       //todo : gw bingung kalok gagal gimana gw gini in dolo
       HttpController::post('Withdraw', [
-        's' => $this->bank->cookie,
+        's' => $this->pool->cookie,
         'Amount' => ($shareIt + $buyWall + $sponsor),
-        'Address' => $this->coinAuth->wallet_dax,
+        'Address' => $this->bank->Wallet,
         'Currency' => 'doge'
       ]);
 
