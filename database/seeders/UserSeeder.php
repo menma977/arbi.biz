@@ -28,6 +28,9 @@ class UserSeeder extends Seeder
     $user->suspend = false;
     $user->save();
 
+    $user->setUpdatedAt(Carbon::parse("last month"));
+    $user->save();
+
     $coinAuth = new CoinAuth();
     $coinAuth->user_id = $user->id;
     $coinAuth->username = "wallstreet.info";
