@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\LogoutController;
+use App\Http\Controllers\API\Auth\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login'])->middleware(['throttle:2,1', 'guest']);
-Route::post('/register', [AuthController::class, 'register'])->middleware(['throttle:2,1', 'guest']);
+Route::post('/login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
-  Route::get('/logout', [AuthController::class, 'logout']);
+  Route::get('/logout', LogoutController::class);
+  Route::post('/register', RegisterController::class);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
