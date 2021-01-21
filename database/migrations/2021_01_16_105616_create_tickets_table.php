@@ -17,8 +17,8 @@ class CreateTicketsTable extends Migration
       $table->timestamps();
       $table->bigInteger('user_id')->index();
       $table->longText('description')->default("admin send ticket");
-      $table->decimal('debit')->default(0);
-      $table->decimal('credit')->default(0);
+      $table->double('debit')->default(0);
+      $table->double('credit')->default(0);
     });
   }
 
