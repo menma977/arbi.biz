@@ -53,12 +53,11 @@ class LoginController extends Controller
             if ($dogeRes["code"] == 200) {
               $coinAccount->cookie = $dogeRes["data"]["SessionCookie"];
               $coinAccount->save();
-              Logger::info("Login: Updating 999doge Cookie from" . $user->username);
+              Logger::info("Login: Updating 999doge Cookie from " . $user->username);
             } else {
-              Logger::info("Login: Fail to update 999doge Cookie from" . $user->username);
+              Logger::info("Login: Fail to update 999doge Cookie from " . $user->username);
             }
           }
-          Logger::info($request->username . " Successfully Login but return invalid user");
           // TODO: Change token name
           $user->token = $user->createToken('API.' . $user->username)->accessToken;
           return response()->json([
