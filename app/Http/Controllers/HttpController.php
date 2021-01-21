@@ -165,11 +165,11 @@ class HttpController
     if ($get->serverError()) {
       $data->push('code', 500);
       $data->push('message', 'server error code 500');
-      $data->push('data', []);
+      $data->push('data', 0);
     } else if ($get->clientError()) {
       $data->push('code', 401);
       $data->push('message', 'client error code 401');
-      $data->push('data', []);
+      $data->push('data', 0);
     } else {
       $data->push('code', 200);
       $data->push('message', 'successful');

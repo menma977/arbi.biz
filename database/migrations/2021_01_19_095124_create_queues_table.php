@@ -17,7 +17,7 @@ class CreateQueuesTable extends Migration
       $table->timestamps();
       $table->bigInteger('user_id')->index();
       $table->enum('type', ['it', 'buy_wall', 'sponsor']);
-      $table->decimal('value', 12, 8);
+      $table->bigInteger('value');
       $table->boolean('send');
     });
   }

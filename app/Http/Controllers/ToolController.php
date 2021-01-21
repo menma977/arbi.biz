@@ -34,6 +34,25 @@ class ToolController
 
   /**
    * @param $user_id
+   * @param $value
+   */
+  public static function loseBot($user_id, $value)
+  {
+    $ticket = new Ticket();
+    $ticket->user_id = $user_id;
+    $ticket->description = "compensation for losing the bot";
+    $ticket->credit = $value;
+    $ticket->save();
+
+    $historyTicket = new HistoryPin();
+    $historyTicket->user_id = $user_id;
+    $historyTicket->description = "compensation for losing the bot";
+    $historyTicket->value = $value;
+    $historyTicket->save();
+  }
+
+  /**
+   * @param $user_id
    * @param $target_id
    * @param $value
    */

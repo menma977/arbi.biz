@@ -18,6 +18,11 @@ class CreateSettingsTable extends Migration
       $table->boolean("maintenance")->default(false);
       $table->integer("logging")->default(1);
       $table->integer("version")->default(1);
+      $table->bigInteger('min_bot')->default(300000000000);
+      $table->bigInteger('max_bot')->default(1000000000000);
+      $table->double("it")->default(0.01);
+      $table->double("buy_wall")->default(0.01);
+      $table->double("sponsor")->default(0.01);
       $table->timestamps();
     });
   }

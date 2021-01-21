@@ -16,12 +16,16 @@ class CreateHistoryBotsTable extends Migration
     Schema::create('history_bots', function (Blueprint $table) {
       $table->timestamps();
       $table->bigInteger('user_id')->index();
-      $table->integer('bot')->default(1);
-      $table->decimal('pay_in', 12, 8);
-      $table->decimal('pay_out', 12, 8);
+      $table->bigInteger('start_balance');
+      $table->bigInteger('end_balance');
+      $table->bigInteger('target_balance');
+      $table->string('bot');
+      $table->bigInteger('pay_in');
+      $table->bigInteger('pay_out');
       $table->integer('low');
       $table->integer('high');
       $table->string('status')->default('lose');
+      $table->boolean('is_finish')->default(false);
     });
   }
 
