@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class HttpController
 {
-  static private $key = "";
+  static private $key = "12650d1e50194d789bf03d22f90ecebe";
 
   /**
    * @param $action
@@ -27,95 +27,125 @@ class HttpController
       $body["Key"] = self::$key;
     }
     $body["a"] = $action;
-    $post = Http::asForm()->withHeaders([
+    $post = Http::asForm()->withHeaders($data = [
       'referer' => 'https://arbi.biz/',
       'origin' => 'https://arbi.biz/'
-    ])->post($url, $body);
+    ])->post($url->url, $body);
 
     $data = new Collection();
 
     switch ($post) {
       case $post->serverError():
-        $data->push('code', 500);
-        $data->push('message', 'server error code 500');
-        $data->push('data', []);
+        $data = [
+          'code' =>  500,
+          'message' =>  'server error code 500',
+          'data' =>  [],
+        ];
         break;
       case $post->clientError():
-        $data->push('code', 401);
-        $data->push('message', 'client error code 401');
-        $data->push('data', []);
+        $data = [
+          'code' =>  401,
+          'message' =>  'client error code 401',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'IP are blocked for 2 minutes.') === true:
         $url->block = true;
         $url->start_at = Carbon::now();
         $url->save();
-        $data->push('code', 500);
-        $data->push('message', 'server has been blocked');
-        $data->push('data', []);
+        $data = [
+          'code' =>  500,
+          'message' =>  'server has been blocked',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'ChanceTooHigh') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Chance Too High');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Chance Too High',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'ChanceTooLow') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Chance Too Low');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Chance Too Low',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'InsufficientFunds') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Insufficient Funds');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Insufficient Funds',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'NoPossibleProfit') === true:
-        $data->push('code', 400);
-        $data->push('message', 'No Possible Profit');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'No Possible Profit',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'MaxPayoutExceeded') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Max Payout Exceeded');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Max Payout Exceeded',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), '999doge') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Invalid request On Server Wait 5 minute to try again');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Invalid request On Server Wait 5 minute to try again',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'error') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Invalid request');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Invalid request',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'TooFast') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Too Fast');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Too Fast',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'TooSmall') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Too Small');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Too Small',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'LoginRequired') === true:
-        $data->push('code', 400);
-        $data->push('message', 'Login Required');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'Login Required',
+          'data' =>  [],
+        ];
         break;
       case str_contains($post->body(), 'InvalidApiKey') === true:
-        $data->push('code', 400);
-        $data->push('message', 'key you provided is invalid');
-        $data->push('data', []);
+        $data = [
+          'code' =>  400,
+          'message' =>  'key you provided is invalid',
+          'data' =>  [],
+        ];
         break;
       default:
-        $data->push('code', 200);
-        $data->push('message', 'successful');
-        $data->push('data', collect($post->json()));
+        $data = [
+          'code' =>  200,
+          'message' =>  'successful',
+          'data' =>  collect($post->json()),
+        ];
         break;
     }
 
-    return $data;
+    return collect($data);
   }
 
   /**
@@ -128,27 +158,37 @@ class HttpController
     $data = new Collection();
 
     if ($get->serverError()) {
-      $data->push('code', 500);
-      $data->push('message', 'server error code 500');
-      $data->push('data', []);
+      $data = [
+        "code" => 500,
+        "message" => 'server error code 500',
+        "data" => [],
+      ];
     } else if ($get->clientError()) {
-      $data->push('code', 401);
-      $data->push('message', 'client error code 401');
-      $data->push('data', []);
+      $data = [
+        "code" => 401,
+        "message" => 'client error code 401',
+        "data" => [],
+      ];
     } else if ($get["status"] === "success") {
       if ($get["data"]["is_valid"] === true) {
-        $data->push('code', 200);
-        $data->push('message', 'valid wallet');
-        $data->push('data', $get["data"]["address"]);
+        $data = [
+          "code" => 200,
+          "message" => 'valid wallet',
+          "data" => $get["data"]["address"],
+        ];
       } else {
-        $data->push('code', 401);
-        $data->push('message', 'Invalid wallet');
-        $data->push('data', $get["data"]["address"]);
+        $data = [
+          "code" => 401,
+          "message" => 'Invalid wallet',
+          "data" => $get["data"]["address"],
+        ];
       }
     } else {
-      $data->push('code', 500);
-      $data->push('message', 'wallet required');
-      $data->push('data', []);
+      $data = [
+        "code" => 500,
+        "message" => 'wallet required',
+        "data" => [],
+      ];
     }
 
     return $data;
@@ -163,17 +203,23 @@ class HttpController
     $data = new Collection();
 
     if ($get->serverError()) {
-      $data->push('code', 500);
-      $data->push('message', 'server error code 500');
-      $data->push('data', 0);
+      $data = [
+        "code" => 500,
+        "message" => 'server error code 500',
+        "data" => 0
+      ];
     } else if ($get->clientError()) {
-      $data->push('code', 401);
-      $data->push('message', 'client error code 401');
-      $data->push('data', 0);
+      $data = [
+        "code" => 401,
+        "message" => 'client error code 401',
+        "data" => 0
+      ];
     } else {
-      $data->push('code', 200);
-      $data->push('message', 'successful');
-      $data->push('data', $get["ticker"]["buy"]);
+      $data = [
+        "code" => 200,
+        "message" => 'successful',
+        "data" => $get["ticker"]["buy"],
+      ];
     }
 
     return $data;
