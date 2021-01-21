@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Ticket;
 use Illuminate\Database\Seeder;
 
 class TicketSeeder extends Seeder
@@ -13,6 +14,10 @@ class TicketSeeder extends Seeder
    */
   public function run()
   {
-    //
+    $ticket = new Ticket();
+    $ticket->user_id = 1;
+    $ticket->description = "add pin";
+    $ticket->debit = 1000000;
+    $ticket->save();
   }
 }

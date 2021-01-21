@@ -9,6 +9,7 @@ use App\Models\CoinAuth;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   */
   public function login(Request $request)
   {
     if (filter_var($request->username, FILTER_VALIDATE_EMAIL)) {
@@ -76,10 +81,13 @@ class AuthController extends Controller
           Logger::error("Login: " . $request->username . " Successfully Login but return invalid user");
           return response()->json(['code' => 500, 'message' => 'Invalid user'], 500);
         }
-      } else {
-        Logger::warning($request->username . " failed login attempt from (" . $request->ip() . ")");
-        return response()->json(["code" => 400, "message" => "Username and/or Password didn't match"], 400);
+
+        Logger::error("Register: " . $request->username . " Successfully Login but return invalid user");
+        return response()->json(['code' => 500, 'message' => 'Invalid user'], 500);
       }
+
+      Logger::warning($request->username . " failed login attempt from (" . $request->ip() . ")");
+      return response()->json(["code" => 400, "message" => "Username and/or Password didn't match"], 400);
     } catch (Exception $e) {
       Logger::error('Login: [' . $e->getCode() . '] "' . $e->getMessage() . '" on line ' . $e->getTrace()[0]['line'] . ' of file ' . $e->getTrace()[0]['file']);
       return response()->json(['code' => 500, "message" => "Something happen at our end"]);
@@ -96,7 +104,7 @@ class AuthController extends Controller
       "password" => "required|same:confirmation_password|min:6",
       "wallet_dax" => ["required", function ($_, $value, $fail) {
         $walletValidity = Http::asForm()->get("https://sochain.com/api/v2/is_address_valid/DOGE/" . $value);
-        if (!$walletValidity->ok() || !$walletValidity->successful()  && !$walletValidity->json()["data"]["is_valid"]) {
+        if (!$walletValidity->ok() || (!$walletValidity->successful() && !$walletValidity->json()["data"]["is_valid"])) {
           $fail("Invalid Wallet Dax");
         }
       }]
@@ -160,7 +168,7 @@ class AuthController extends Controller
 
   public function logout(Request $request)
   {
-    Logger::warning("Logout: attempt from " . Auth::user()->username . "(" . $request->ip() . ") failed at creating Doge Account");
+    Logger::warning("Logout: attempt from " . Auth::user()->username . " failed at creating Doge Account");
     foreach (Auth::user()->tokens as $key => $value) {
       $value->delete();
     }

@@ -37,7 +37,7 @@ class QueueExecution extends Command
       $bank = Bank::find(1);
       if (!$bank->cookie || $bank->updated_at <= Carbon::now()->addMonths(-1)) {
         $getCookie = $this->getCookie($bank->username, $bank->password);
-        if ($getCookie != "break") {
+        if ($getCookie !== "break") {
           $bank->cookie = $getCookie;
           $bank->save();
         }
@@ -46,7 +46,7 @@ class QueueExecution extends Command
       $it = IT::find(1);
       if (!$it->cookie || $it->updated_at <= Carbon::now()->addMonths(-1)) {
         $getCookie = $this->getCookie($it->username, $it->password);
-        if ($getCookie != "break") {
+        if ($getCookie !== "break") {
           $it->cookie = $getCookie;
           $it->save();
         }
@@ -55,7 +55,7 @@ class QueueExecution extends Command
       $buy_wall = BuyWall::find(1);
       if (!$buy_wall->cookie || $buy_wall->updated_at <= Carbon::now()->addMonths(-1)) {
         $getCookie = $this->getCookie($buy_wall->username, $buy_wall->password);
-        if ($getCookie != "break") {
+        if ($getCookie !== "break") {
           $buy_wall->cookie = $getCookie;
           $buy_wall->save();
         }
@@ -86,7 +86,7 @@ class QueueExecution extends Command
 
       $post = HttpController::post("Withdraw", $data);
 
-      if ($post['code'] == 200) {
+      if ($post['code'] === 200) {
         $queue->send = true;
       } else {
         $queue->created_at = Carbon::now()->addMinutes(5)->format('Y-m-d H:i:s');
@@ -102,7 +102,7 @@ class QueueExecution extends Command
       'password' => $password,
     ];
     $post = HttpController::post("Login", $data, true);
-    if ($post['code'] == 200) {
+    if ($post['code'] === 200) {
       return $post['data']['SessionCookie'];
     }
     return "break";
