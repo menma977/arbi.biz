@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
   {
     $this->call(UserSeeder::class);
     $this->call(BinarySeeder::class);
+    $this->call(ListUrlSeeder::class);
     $this->call(SettingSeeder::class);
     $this->call(TicketSeeder::class);
   }
