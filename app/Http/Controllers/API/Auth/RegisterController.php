@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Auth;
 use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
+use App\Http\Controllers\ToolController;
 use App\Models\Binary;
 use App\Models\CoinAuth;
 use App\Models\User;
@@ -73,6 +74,7 @@ class RegisterController extends Controller
               "cookie" => $dogeAccount["SessionCookie"],
             ]);
             $coinAuth->save();
+            ToolController::register(Auth::id(), 1, $user->username);
             return response()->json(['code' => 200, "message" => "success"], 200);
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
           } else {
