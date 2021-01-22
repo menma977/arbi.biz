@@ -51,7 +51,7 @@ class FakeController extends Controller
 
     $setting = Setting::find(1);
     $this->validate($request, [
-      'balance' => 'required|min:' . $setting->min_bot . '|max:' . $setting->max_bot,
+      'balance' => 'required|numeric|min:' . $setting->min_bot . '|max:' . $setting->max_bot,
     ]);
 
     if (!$this->coinAuth->cookie) {
