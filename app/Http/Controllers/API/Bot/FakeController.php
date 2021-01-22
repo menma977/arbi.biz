@@ -58,36 +58,36 @@ class FakeController extends Controller
     ]);
 
     if (!$this->coinAuth->cookie) {
-      $this->coinAuth->cookie = $this->getCookie($this->coinAuth->username, $this->coinAuth->password);
+      $this->coinAuth->cookie = self::getCookie($this->coinAuth->username, $this->coinAuth->password);
       if ($this->coinAuth->cookie !== "break") {
         $this->coinAuth->save();
       }
     }
 
     if (!$this->pool->cookie) {
-      $this->pool->cookie = $this->getCookie($this->pool->username, $this->pool->password);
+      $this->pool->cookie = self::getCookie($this->pool->username, $this->pool->password);
       if ($this->pool->cookie !== "break") {
         $this->pool->save();
       }
     }
 
     if (!$this->shareIT->cookie) {
-      $this->shareIT->cookie = $this->getCookie($this->shareIT->username, $this->shareIT->password);
+      $this->shareIT->cookie = self::getCookie($this->shareIT->username, $this->shareIT->password);
       if ($this->shareIT->cookie !== "break") {
         $this->shareIT->save();
       }
     }
 
     if (!$this->shareBuyWall->cookie) {
-      $this->shareBuyWall->cookie = $this->getCookie($this->shareBuyWall->username, $this->shareBuyWall->password);
+      $this->shareBuyWall->cookie = self::getCookie($this->shareBuyWall->username, $this->shareBuyWall->password);
       if ($this->shareBuyWall->cookie !== "break") {
         $this->shareBuyWall->save();
       }
     }
 
-    $balancePool = $this->getBalance($this->pool->cookie);
+    $balancePool = self::getBalance($this->pool->cookie);
     if ($balancePool->code === 200) {
-      if ($request->balance > $balancePool->balance) {
+      if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value'))) {
         $data = [
           's' => $this->coinAuth->cookie,
           'Amount' => $request->balance,
@@ -115,52 +115,39 @@ class FakeController extends Controller
       $sponsor = $balancePool->balance * Setting::find()->sponsor;
       $remainingBalance = $balancePool->balance - ($shareIt + $buyWall + $sponsor);
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
+      $post = HttpController::post('Withdraw', [
         's' => $this->pool->cookie,
         'Amount' => $remainingBalance,
-        'Address' => $this->coinAuth->wallet_dax,
+        'Address' => $this->coinAuth->wallet,
         'Currency' => 'doge'
       ]);
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
-        's' => $this->coinAuth->cookie,
-        'Amount' => 0,
-        'Address' => $this->coinAuth->wallet_dax,
-        'Currency' => 'doge'
-      ]);
+      if ($post['code'] === 200) {
+        $queue = new Queue();
+        $queue->type = 'it';
+        $queue->user_id = 1;
+        $queue->value = $shareIt;
+        $queue->send = false;
+        $queue->save();
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
-        's' => $this->pool->cookie,
-        'Amount' => ($shareIt + $buyWall + $sponsor),
-        'Address' => $this->bank->Wallet,
-        'Currency' => 'doge'
-      ]);
+        $queue = new Queue();
+        $queue->type = 'buy_wall';
+        $queue->user_id = 1;
+        $queue->value = $buyWall;
+        $queue->send = false;
+        $queue->save();
 
-      $queue = new Queue();
-      $queue->type = 'it';
-      $queue->user_id = 1;
-      $queue->value = $shareIt;
-      $queue->send = false;
-      $queue->save();
+        $queue = new Queue();
+        $queue->type = 'sponsor';
+        $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor;
+        $queue->value = $sponsor;
+        $queue->send = false;
+        $queue->save();
 
-      $queue = new Queue();
-      $queue->type = 'buy_wall';
-      $queue->user_id = 1;
-      $queue->value = $buyWall;
-      $queue->send = false;
-      $queue->save();
+        return response()->json(['message' => "WIN"]);
+      }
 
-      $queue = new Queue();
-      $queue->type = 'sponsor';
-      $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor;
-      $queue->value = $sponsor;
-      $queue->send = false;
-      $queue->save();
-
-      return response()->json(['message' => "WIN"], 500);
+      return response()->json(['message' => "access block"]);
     }
 
     return response()->json(['message' => $balancePool->message], 500);
@@ -170,7 +157,7 @@ class FakeController extends Controller
    * @param $cookie
    * @return array
    */
-  public function getBalance($cookie)
+  public static function getBalance($cookie)
   {
     $data = [
       's' => $cookie,
@@ -198,7 +185,7 @@ class FakeController extends Controller
    * @param $password
    * @return string
    */
-  private function getCookie($username, $password)
+  private static function getCookie($username, $password)
   {
     $data = [
       'username' => $username,

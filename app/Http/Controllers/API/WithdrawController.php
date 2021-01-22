@@ -13,29 +13,29 @@ class WithdrawController extends Controller
 
   public function all()
   {
-    $res = self::wd(Auth::id(), 0);
-    if ($res["code"] < 400) {
+    $response = self::withdraw(Auth::id(), 0);
+    if ($response["code"] < 400) {
       return response()->json([
         "message" => "Success"
       ]);
-    } else {
-      return response()->json($res, $res["code"]);
     }
+
+    return response()->json($response, $response["code"]);
   }
 
   public function partial(Request $request)
   {
-    $res = self::wd(Auth::id(), $request->amount);
-    if ($res["code"] < 400) {
+    $response = self::withdraw(Auth::id(), $request->amount);
+    if ($response["code"] < 400) {
       return response()->json([
         "message" => "Success"
       ]);
-    } else {
-      return response()->json($res, $res["code"]);
     }
+
+    return response()->json($response, $response["code"]);
   }
 
-  private static function wd($userId, $amount)
+  private static function withdraw($userId, $amount)
   {
     $coinAuth = CoinAuth::where("user_id", "=", $userId);
     return HttpController::post("Withdraw", [
