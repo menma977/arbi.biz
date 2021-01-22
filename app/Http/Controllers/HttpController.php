@@ -196,7 +196,7 @@ class HttpController
   public static function dogePrice()
   {
     $get = Http::get("https://indodax.com/api/ticker/dogeidr");
-    
+
     if ($get->serverError()) {
       $data = [
         "code" => 500,

@@ -16,6 +16,7 @@ class CreateAnnouncementsTable extends Migration
     Schema::create('announcements', function (Blueprint $table) {
       $table->id();
       $table->enum('type', ['info', 'warning', 'danger']);
+      $table->string('title');
       $table->lineString('description');
       $table->timestamps();
     });

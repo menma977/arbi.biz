@@ -12,7 +12,6 @@ use App\Models\CoinAuth;
 use App\Models\IT;
 use App\Models\Queue;
 use App\Models\Setting;
-use App\Models\TradingPool;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,7 +23,6 @@ class FakeController extends Controller
   protected $user;
   protected $coinAuth;
   protected $bank;
-  protected $pool;
   protected $shareIT;
   protected $shareBuyWall;
 
@@ -36,7 +34,6 @@ class FakeController extends Controller
     $this->user = Auth::user();
     $this->coinAuth = CoinAuth::find($this->user);
     $this->bank = Bank::find(1);
-    $this->pool = TradingPool::all()->random(1)->first();
     $this->shareIT = IT::find(1);
     $this->shareBuyWall = BuyWall::find(1);
   }
@@ -64,10 +61,10 @@ class FakeController extends Controller
       }
     }
 
-    if (!$this->pool->cookie) {
-      $this->pool->cookie = self::getCookie($this->pool->username, $this->pool->password);
-      if ($this->pool->cookie !== "break") {
-        $this->pool->save();
+    if (!$this->bank->cookie) {
+      $this->bank->cookie = self::getCookie($this->bank->username, $this->bank->password);
+      if ($this->bank->cookie !== "break") {
+        $this->bank->save();
       }
     }
 
@@ -85,7 +82,7 @@ class FakeController extends Controller
       }
     }
 
-    $balancePool = self::getBalance($this->pool->cookie);
+    $balancePool = self::getBalance($this->bank->cookie);
     if ($balancePool->code === 200) {
       if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value'))) {
         $data = [
@@ -101,7 +98,11 @@ class FakeController extends Controller
             $balance = number_format($request->balance / 10 ** 8, 8, '.', '');
             $receiveTicket = ($getPrice['data'] * $balance) / 500000;
             ToolController::loseBot($this->user->id, $receiveTicket);
-            return response()->json(['message' => "LOSE"], 500);
+
+            $this->user->trade_fake = Carbon::now();
+            $this->user->save();
+
+            return response()->json(['message' => "LOSE"]);
           }
 
           return response()->json(['message' => $getPrice->message], 500);
@@ -116,7 +117,7 @@ class FakeController extends Controller
       $remainingBalance = $balancePool->balance - ($shareIt + $buyWall + $sponsor);
 
       $post = HttpController::post('Withdraw', [
-        's' => $this->pool->cookie,
+        's' => $this->bank->cookie,
         'Amount' => $remainingBalance,
         'Address' => $this->coinAuth->wallet,
         'Currency' => 'doge'
@@ -143,6 +144,9 @@ class FakeController extends Controller
         $queue->value = $sponsor;
         $queue->send = false;
         $queue->save();
+
+        $this->user->trade_fake = Carbon::now();
+        $this->user->save();
 
         return response()->json(['message' => "WIN"]);
       }

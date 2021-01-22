@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Bot;
 
 use App\Http\Controllers\Controller;
 use App\Models\HistoryBot;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,16 @@ use Illuminate\Validation\ValidationException;
 
 class MartiAngelController extends Controller
 {
+  protected $user;
+
+  /**
+   * FakeController constructor.
+   */
+  public function __construct()
+  {
+    $this->user = Auth::user();
+  }
+
   /**
    * @param Request $request
    * @return JsonResponse
@@ -18,6 +29,10 @@ class MartiAngelController extends Controller
    */
   public function index(Request $request)
   {
+    if ($this->user->trade_real === Carbon::now()) {
+      return response()->json(['message' => 'Already trade today'], 500);
+    }
+
     $this->validate($request, [
       'start_balance' => 'required|numeric',
       'end_balance' => 'required|numeric',
@@ -43,6 +58,8 @@ class MartiAngelController extends Controller
     $historyBot->status = $request->status;
     if ($historyBot->start_balance >= $historyBot->target_balance) {
       $historyBot->is_finish = true;
+      $this->user->trade_real = Carbon::now();
+      $this->user->save();
     } else {
       $historyBot->is_finish = false;
     }
