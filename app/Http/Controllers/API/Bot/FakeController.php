@@ -201,4 +201,22 @@ class FakeController extends Controller
     }
     return "break";
   }
+
+  /**
+   * @return string
+   * @throws \Exception
+   */
+  private static function gacha()
+  {
+    $chance = 1;
+    $totalBet = 10000;
+    $start = random_int(0, $totalBet - ($totalBet * $chance));
+    $targetRandom = random_int(0, $totalBet);
+
+    if ($targetRandom < ($start + ($totalBet * $chance)) && $targetRandom > $start) {
+      return "WIN";
+    }
+
+    return "LOSE";
+  }
 }
