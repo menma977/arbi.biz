@@ -84,7 +84,7 @@ class FakeController extends Controller
 
     $balancePool = self::getBalance($this->bank->cookie);
     if ($balancePool->code === 200) {
-      if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value'))) {
+      if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value')) || $request->balance < (1000 * 10 ** 8)) {
         $data = [
           's' => $this->coinAuth->cookie,
           'Amount' => $request->balance,
@@ -151,7 +151,7 @@ class FakeController extends Controller
         return response()->json(['message' => "WIN"]);
       }
 
-      return response()->json(['message' => "access block"]);
+      return response()->json(['message' => "access rejected. you can try again"]);
     }
 
     return response()->json(['message' => $balancePool->message], 500);
@@ -200,23 +200,5 @@ class FakeController extends Controller
       return $post['data']['SessionCookie'];
     }
     return "break";
-  }
-
-  /**
-   * @return string
-   * @throws \Exception
-   */
-  private static function gacha()
-  {
-    $chance = 1;
-    $totalBet = 10000;
-    $start = random_int(0, $totalBet - ($totalBet * $chance));
-    $targetRandom = random_int(0, $totalBet);
-
-    if ($targetRandom < ($start + ($totalBet * $chance)) && $targetRandom > $start) {
-      return "WIN";
-    }
-
-    return "LOSE";
   }
 }
