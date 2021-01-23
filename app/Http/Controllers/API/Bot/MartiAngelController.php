@@ -29,10 +29,6 @@ class MartiAngelController extends Controller
    */
   public function index(Request $request)
   {
-    if ($this->user->trade_real === Carbon::now()) {
-      return response()->json(['message' => 'Already trade today'], 500);
-    }
-
     $this->validate($request, [
       'start_balance' => 'required|numeric',
       'end_balance' => 'required|numeric',
