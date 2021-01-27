@@ -24,6 +24,7 @@ class UserController extends Controller
     $sponsorBinary = ($myBin) ? User::find($myBin->sponsor) : $user;
 
     return response()->json([
+      "code" => 200,
       "username" => $user->username,
       "name" => $user->name,
       "email" => $user->email,

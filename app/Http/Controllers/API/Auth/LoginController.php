@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API\Auth;
 use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
+use App\Models\Binary;
 use App\Models\CoinAuth;
+use App\Models\Ticket;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -60,6 +63,13 @@ class LoginController extends Controller
           }
           // TODO: Change token name
           $user->token = $user->createToken('API.' . $user->username)->accessToken;
+          $userTicket = Ticket::where("user_id", "=", $user->id);
+          $ticketSpent = $userTicket->where("credit", ">", 0)->sum("credit");
+          $ticketOwned = $userTicket->where("debit", ">", 0)->sum("debit") - $ticketSpent;
+          $coinAuth = CoinAuth::where("user_id", "=", $user->id)->first();
+          $binaries = Binary::select(["down_line as id", "users.username as username"])->where("sponsor", "=", $user->id)->join("users", "binaries.down_line", "=", "users.id")->get();
+          $myBin = Binary::where("down_line", "=", $user->id)->first();
+          $sponsorBinary = ($myBin) ? User::find($myBin->sponsor) : $user;
           return response()->json([
             "code" => 200,
             "user" => [
@@ -70,6 +80,13 @@ class LoginController extends Controller
               "isSuspended" => $user->suspend,
               "token" => $user->token,
               "cookie" => $coinAccount->cookie,
+              "walletDax" => $coinAuth->wallet_dax,
+              "totalPin" => $ticketOwned,
+              "pinSpent" => $ticketSpent,
+              "totalDownLine" => $binaries->count(),
+              "downLines" => $binaries,
+              "sponsorId" => $sponsorBinary->id,
+              "sponsor" => $sponsorBinary->username
             ]
           ]);
         } else {
@@ -85,7 +102,7 @@ class LoginController extends Controller
       return response()->json(["code" => 400, "message" => "Username and/or Password didn't match"], 400);
     } catch (Exception $e) {
       Logger::error('Login: [' . $e->getCode() . '] "' . $e->getMessage() . '" on line ' . $e->getTrace()[0]['line'] . ' of file ' . $e->getTrace()[0]['file']);
-      return response()->json(['code' => 500, "message" => "Something happen at our end"]);
+      return response()->json(['code' => 500, "message" => "Something happen at our end"], 500);
     }
   }
 }

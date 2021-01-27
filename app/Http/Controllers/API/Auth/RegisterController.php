@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
+
+  private $PIN_SPENT_ON_REGISTER = 1;
+
   public function __invoke(Request $request)
   {
     Logger::info("Register: attempt from (" . $request->ip() . ")");
@@ -74,7 +77,7 @@ class RegisterController extends Controller
               "cookie" => $dogeAccount["SessionCookie"],
             ]);
             $coinAuth->save();
-            ToolController::register(Auth::id(), 1, $user->username);
+            ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
             return response()->json(['code' => 200, "message" => "success"], 200);
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
           } else {
@@ -94,7 +97,7 @@ class RegisterController extends Controller
       }
     } catch (Exception $e) {
       Logger::error('Register: [' . $e->getCode() . '] "' . $e->getMessage() . '" on line ' . $e->getTrace()[0]['line'] . ' of file ' . $e->getTrace()[0]['file']);
-      return response()->json(['code' => 500, "message" => "Something happen at our end"]);
+      return response()->json(['code' => 500, "message" => "Something happen at our end"], 500);
     }
   }
 
