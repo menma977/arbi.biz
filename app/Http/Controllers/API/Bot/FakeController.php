@@ -12,7 +12,6 @@ use App\Models\CoinAuth;
 use App\Models\IT;
 use App\Models\Queue;
 use App\Models\Setting;
-use App\Models\TradingPool;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,7 +23,6 @@ class FakeController extends Controller
   protected $user;
   protected $coinAuth;
   protected $bank;
-  protected $pool;
   protected $shareIT;
   protected $shareBuyWall;
 
@@ -36,7 +34,6 @@ class FakeController extends Controller
     $this->user = Auth::user();
     $this->coinAuth = CoinAuth::find($this->user);
     $this->bank = Bank::find(1);
-    $this->pool = TradingPool::all()->random(1)->first();
     $this->shareIT = IT::find(1);
     $this->shareBuyWall = BuyWall::find(1);
   }
@@ -54,40 +51,40 @@ class FakeController extends Controller
 
     $setting = Setting::find(1);
     $this->validate($request, [
-      'balance' => 'required|min:' . $setting->min_bot . '|max:' . $setting->max_bot,
+      'balance' => 'required|numeric|min:' . $setting->min_bot . '|max:' . $setting->max_bot,
     ]);
 
     if (!$this->coinAuth->cookie) {
-      $this->coinAuth->cookie = $this->getCookie($this->coinAuth->username, $this->coinAuth->password);
+      $this->coinAuth->cookie = self::getCookie($this->coinAuth->username, $this->coinAuth->password);
       if ($this->coinAuth->cookie !== "break") {
         $this->coinAuth->save();
       }
     }
 
-    if (!$this->pool->cookie) {
-      $this->pool->cookie = $this->getCookie($this->pool->username, $this->pool->password);
-      if ($this->pool->cookie !== "break") {
-        $this->pool->save();
+    if (!$this->bank->cookie) {
+      $this->bank->cookie = self::getCookie($this->bank->username, $this->bank->password);
+      if ($this->bank->cookie !== "break") {
+        $this->bank->save();
       }
     }
 
     if (!$this->shareIT->cookie) {
-      $this->shareIT->cookie = $this->getCookie($this->shareIT->username, $this->shareIT->password);
+      $this->shareIT->cookie = self::getCookie($this->shareIT->username, $this->shareIT->password);
       if ($this->shareIT->cookie !== "break") {
         $this->shareIT->save();
       }
     }
 
     if (!$this->shareBuyWall->cookie) {
-      $this->shareBuyWall->cookie = $this->getCookie($this->shareBuyWall->username, $this->shareBuyWall->password);
+      $this->shareBuyWall->cookie = self::getCookie($this->shareBuyWall->username, $this->shareBuyWall->password);
       if ($this->shareBuyWall->cookie !== "break") {
         $this->shareBuyWall->save();
       }
     }
 
-    $balancePool = $this->getBalance($this->pool->cookie);
+    $balancePool = self::getBalance($this->bank->cookie);
     if ($balancePool->code === 200) {
-      if ($request->balance > $balancePool->balance) {
+      if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value')) || $request->balance < (1000 * 10 ** 8)) {
         $data = [
           's' => $this->coinAuth->cookie,
           'Amount' => $request->balance,
@@ -101,7 +98,11 @@ class FakeController extends Controller
             $balance = number_format($request->balance / 10 ** 8, 8, '.', '');
             $receiveTicket = ($getPrice['data'] * $balance) / 500000;
             ToolController::loseBot($this->user->id, $receiveTicket);
-            return response()->json(['message' => "LOSE"], 500);
+
+            $this->user->trade_fake = Carbon::now();
+            $this->user->save();
+
+            return response()->json(['message' => "LOSE"]);
           }
 
           return response()->json(['message' => $getPrice->message], 500);
@@ -115,52 +116,42 @@ class FakeController extends Controller
       $sponsor = $balancePool->balance * Setting::find()->sponsor;
       $remainingBalance = $balancePool->balance - ($shareIt + $buyWall + $sponsor);
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
-        's' => $this->pool->cookie,
+      $post = HttpController::post('Withdraw', [
+        's' => $this->bank->cookie,
         'Amount' => $remainingBalance,
-        'Address' => $this->coinAuth->wallet_dax,
+        'Address' => $this->coinAuth->wallet,
         'Currency' => 'doge'
       ]);
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
-        's' => $this->coinAuth->cookie,
-        'Amount' => 0,
-        'Address' => $this->coinAuth->wallet_dax,
-        'Currency' => 'doge'
-      ]);
+      if ($post['code'] === 200) {
+        $queue = new Queue();
+        $queue->type = 'it';
+        $queue->user_id = 1;
+        $queue->value = $shareIt;
+        $queue->send = false;
+        $queue->save();
 
-      //todo : gw bingung kalok gagal gimana gw gini in dolo
-      HttpController::post('Withdraw', [
-        's' => $this->pool->cookie,
-        'Amount' => ($shareIt + $buyWall + $sponsor),
-        'Address' => $this->bank->Wallet,
-        'Currency' => 'doge'
-      ]);
+        $queue = new Queue();
+        $queue->type = 'buy_wall';
+        $queue->user_id = 1;
+        $queue->value = $buyWall;
+        $queue->send = false;
+        $queue->save();
 
-      $queue = new Queue();
-      $queue->type = 'it';
-      $queue->user_id = 1;
-      $queue->value = $shareIt;
-      $queue->send = false;
-      $queue->save();
+        $queue = new Queue();
+        $queue->type = 'sponsor';
+        $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor;
+        $queue->value = $sponsor;
+        $queue->send = false;
+        $queue->save();
 
-      $queue = new Queue();
-      $queue->type = 'buy_wall';
-      $queue->user_id = 1;
-      $queue->value = $buyWall;
-      $queue->send = false;
-      $queue->save();
+        $this->user->trade_fake = Carbon::now();
+        $this->user->save();
 
-      $queue = new Queue();
-      $queue->type = 'sponsor';
-      $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor;
-      $queue->value = $sponsor;
-      $queue->send = false;
-      $queue->save();
+        return response()->json(['message' => "WIN"]);
+      }
 
-      return response()->json(['message' => "WIN"], 500);
+      return response()->json(['message' => "access rejected. you can try again"]);
     }
 
     return response()->json(['message' => $balancePool->message], 500);
@@ -170,7 +161,7 @@ class FakeController extends Controller
    * @param $cookie
    * @return array
    */
-  public function getBalance($cookie)
+  public static function getBalance($cookie)
   {
     $data = [
       's' => $cookie,
@@ -198,7 +189,7 @@ class FakeController extends Controller
    * @param $password
    * @return string
    */
-  private function getCookie($username, $password)
+  private static function getCookie($username, $password)
   {
     $data = [
       'username' => $username,

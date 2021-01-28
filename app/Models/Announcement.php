@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string created_at
  * @property string updated_at
  * @property string type = [info, warning, danger]
+ * @property string title
  * @property string description
  */
 class Announcement extends Model
@@ -24,6 +25,7 @@ class Announcement extends Model
    */
   protected $fillable = [
     'type', // ['info', 'warning', 'danger']
+    'title',
     'description',
   ];
 }
