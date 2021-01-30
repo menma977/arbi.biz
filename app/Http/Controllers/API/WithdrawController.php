@@ -25,6 +25,9 @@ class WithdrawController extends Controller
 
   public function partial(Request $request)
   {
+    $request->validate([
+      "amount" => "required|numeric"
+    ]);
     $response = self::withdraw(Auth::id(), $request->amount);
     if ($response["code"] < 400) {
       return response()->json([
