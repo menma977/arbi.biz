@@ -14,9 +14,9 @@ class Announcement implements ShouldBroadcast
 {
   use Dispatchable, InteractsWithSockets, SerializesModels;
 
-  protected $title;
-  protected $message;
-  protected $type;
+  public $title;
+  public $message;
+  public $type;
 
   /**
    * Create a new event instance.
