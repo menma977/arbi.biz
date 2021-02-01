@@ -15,9 +15,6 @@ class CreateBuyWallsTable extends Migration
   {
     Schema::create('buy_walls', function (Blueprint $table) {
       $table->id();
-      $table->string('username');
-      $table->string('password');
-      $table->text('cookie')->nullable();
       $table->text('wallet');
       $table->timestamps();
     });

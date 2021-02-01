@@ -11,9 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string created_at
  * @property string updated_at
  * @property integer id
- * @property string username
- * @property string password
- * @property string cookie
  * @property string wallet
  */
 class IT extends Model
@@ -26,9 +23,6 @@ class IT extends Model
    * @var array
    */
   protected $fillable = [
-    'username',
-    'password',
-    'cookie',
     'wallet',
   ];
 }

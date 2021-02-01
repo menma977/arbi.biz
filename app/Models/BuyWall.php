@@ -11,9 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string created_at
  * @property string updated_at
  * @property integer id
- * @property string username
- * @property string password
- * @property string cookie
  * @property string wallet
  */
 class BuyWall extends Model

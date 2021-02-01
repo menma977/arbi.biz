@@ -63,13 +63,17 @@ class LoginController extends Controller
           }
           // TODO: Change token name
           $user->token = $user->createToken('API.' . $user->username)->accessToken;
-          $userTicket = Ticket::where("user_id", "=", $user->id);
+          $userTicket = Ticket::where("user_id", $user->id);
           $ticketSpent = $userTicket->where("credit", ">", 0)->sum("credit");
           $ticketOwned = $userTicket->where("debit", ">", 0)->sum("debit") - $ticketSpent;
           $coinAuth = CoinAuth::where("user_id", "=", $user->id)->first();
           $binaries = Binary::select(["down_line as id", "users.username as username"])->where("sponsor", "=", $user->id)->join("users", "binaries.down_line", "=", "users.id")->get();
-          $myBin = Binary::where("down_line", "=", $user->id)->first();
-          $sponsorBinary = ($myBin) ? User::find($myBin->sponsor) : $user;
+          $myBin = Binary::where("down_line", $user->id)->first();
+          if ($myBin) {
+            $sponsorBinary = User::find($myBin->sponsor);
+          } else {
+            $sponsorBinary = User::find(1);
+          }
           return response()->json([
             "code" => 200,
             "user" => [
@@ -89,9 +93,6 @@ class LoginController extends Controller
               "sponsor" => $sponsorBinary->username
             ]
           ]);
-        } else {
-          Logger::error("Login: " . $request->username . " Successfully Login but return invalid user");
-          return response()->json(['code' => 500, 'message' => 'Invalid user'], 500);
         }
 
         Logger::error("Login: " . $request->username . " Successfully Login but return invalid user");

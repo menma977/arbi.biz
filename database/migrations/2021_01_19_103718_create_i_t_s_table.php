@@ -15,9 +15,6 @@ class CreateITSTable extends Migration
   {
     Schema::create('i_t_s', function (Blueprint $table) {
       $table->id();
-      $table->string('username');
-      $table->string('password');
-      $table->text('cookie')->nullable();
       $table->text('wallet');
       $table->timestamps();
     });

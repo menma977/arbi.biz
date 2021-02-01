@@ -37,7 +37,7 @@ class RegisterController extends Controller
       }]
     ]);
     try {
-      $dogeAccount = HttpController::post("CreateAccount");
+      $dogeAccount = HttpController::post("CreateAccount", null, true);
       if ($dogeAccount["code"] < 400) {
         $dogeAccount = $dogeAccount["data"];
         $username_coin = $this->randomStr();
@@ -48,7 +48,6 @@ class RegisterController extends Controller
           "password" => $password_coin
         ]);
         if ($dogeUser["code"] < 400) {
-          $dogeUser = $dogeUser["data"];
           $wallet = HttpController::post("GetDepositAddress", ['s' => $dogeAccount["SessionCookie"], 'Currency' => "doge"]);
           if ($wallet["code"] < 400) {
             $wallet = $wallet["data"];
@@ -78,23 +77,23 @@ class RegisterController extends Controller
             ]);
             $coinAuth->save();
             ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
-            return response()->json(['code' => 200, "message" => "success"], 200);
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
-          } else {
-            Logger::warning("Register: attempt from (" . $request->ip() . ") failed at fetching wallet");
-            Logger::warning("Register: (" . $request->ip() . ") status: " . $dogeAccount["code"] . " message: ", $dogeAccount["message"]);
-            return response()->json(['code' => 502, "message" => "Something happen at our end"], 502);
+            return response()->json(['code' => 200, "message" => "success"]);
           }
-        } else {
-          Logger::warning("Register: attempt from (" . $request->ip() . ") failed at creating Doge User");
+
+          Logger::warning("Register: attempt from (" . $request->ip() . ") failed at fetching wallet");
           Logger::warning("Register: (" . $request->ip() . ") status: " . $dogeAccount["code"] . " message: ", $dogeAccount["message"]);
           return response()->json(['code' => 502, "message" => "Something happen at our end"], 502);
         }
-      } else {
-        Logger::warning("Register: attempt from (" . $request->ip() . ") failed at creating Doge Account");
+
+        Logger::warning("Register: attempt from (" . $request->ip() . ") failed at creating Doge User");
         Logger::warning("Register: (" . $request->ip() . ") status: " . $dogeAccount["code"] . " message: ", $dogeAccount["message"]);
         return response()->json(['code' => 502, "message" => "Something happen at our end"], 502);
       }
+
+      Logger::warning("Register: attempt from (" . $request->ip() . ") failed at creating Doge Account");
+      Logger::warning("Register: (" . $request->ip() . ") status: " . $dogeAccount["code"] . " message: ", $dogeAccount["message"]);
+      return response()->json(['code' => 502, "message" => "Something happen at our end"], 502);
     } catch (Exception $e) {
       Logger::error('Register: [' . $e->getCode() . '] "' . $e->getMessage() . '" on line ' . $e->getTrace()[0]['line'] . ' of file ' . $e->getTrace()[0]['file']);
       return response()->json(['code' => 500, "message" => "Something happen at our end"], 500);

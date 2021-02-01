@@ -12,16 +12,23 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+  /**
+   * @return \Illuminate\Http\JsonResponse
+   */
   public function index()
   {
-    $user = Auth::user();
-    $userTicket = Ticket::where("user_id", "=", $user->id);
+    $user = User::find(Auth::id());
+    $userTicket = Ticket::where("user_id", $user->id);
     $ticketSpent = $userTicket->where("credit", ">", 0)->sum("credit");
     $ticketOwned = $userTicket->where("debit", ">", 0)->sum("debit") - $ticketSpent;
     $coinAuth = CoinAuth::where("user_id", "=", $user->id)->first();
     $binaries = Binary::select(["down_line as id", "users.username as username"])->where("sponsor", "=", $user->id)->join("users", "binaries.down_line", "=", "users.id")->get();
     $myBin = Binary::where("down_line", "=", $user->id)->first();
-    $sponsorBinary = ($myBin) ? User::find($myBin->sponsor) : $user;
+    if ($myBin) {
+      $sponsorBinary = User::find($myBin->sponsor);
+    } else {
+      $sponsorBinary = User::find(1);
+    }
 
     return response()->json([
       "code" => 200,

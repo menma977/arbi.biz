@@ -17,7 +17,7 @@ class HttpController
    * @param bool $needKey
    * @return Collection
    */
-  public static function post($action, $body, $needKey = true)
+  public static function post($action, $body = null, $needKey = true)
   {
     $url = ListUrl::where("block", false)->first();
     if (!$url) {
