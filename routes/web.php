@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,12 @@ Route::get('/', function () {
 })->name("welcome");
 
 Route::middleware(['auth'])->group(function () {
-  Route::get("dashboard", [AnnouncementController::class, 'index'])->name('dashboard');
-  Route::post("notification/post", [AnnouncementController::class, 'store'])->name('notification.store');
+  Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::get("", [DashboardController::class, 'index'])->name('index');
+  });
+  Route::group(['prefix' => 'notification', 'as' => 'notification.'], function () {
+    Route::post("store", [AnnouncementController::class, 'store'])->name('store');
+  });
 });
 
 require __DIR__ . '/auth.php';
