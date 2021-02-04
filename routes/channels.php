@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Route::middleware(['auth:api'])->group(function () {
+
+});
+
+Broadcast::channel('arbi.biz.ticket.{username}', function ($user, $id) {
+  return $user ? true : false;
 });

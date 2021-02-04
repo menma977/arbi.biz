@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
 
-Route::middleware(['auth:api', 'verified'])->group(function () {
+Route::middleware(['auth:api'])->group(function () {
   Route::get('/logout', LogoutController::class);
   Route::post('/register', RegisterController::class);
 

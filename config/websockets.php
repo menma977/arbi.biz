@@ -210,7 +210,7 @@ return [
     |
     */
 
-    'interval_in_seconds' => 60,
+    'interval_in_seconds' => 60 * 5,
 
     /*
     |--------------------------------------------------------------------------
@@ -222,7 +222,7 @@ return [
     |
     */
 
-    'delete_statistics_older_than_days' => 60,
+    'delete_statistics_older_than_days' => 7,
 
   ],
 
