@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Bot;
 
+use App\Events\TredingEvent;
 use App\Http\Controllers\Controller;
 use App\Models\HistoryBot;
 use Carbon\Carbon;
@@ -60,6 +61,10 @@ class MartiAngelController extends Controller
       $historyBot->is_finish = false;
     }
     $historyBot->save();
+
+    $bot_one = $this->user->trade_real == Carbon::now();
+    $bot_two = $this->user->trade_real == Carbon::now();
+    event(new TredingEvent(Auth::user()->username, $bot_one, $bot_two));
 
     $data = [
       'start_balance' => $historyBot->start_balance,

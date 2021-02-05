@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Bot;
 
+use App\Events\TredingEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ToolController;
@@ -102,6 +103,10 @@ class FakeController extends Controller
             $this->user->trade_fake = Carbon::now();
             $this->user->save();
 
+            $bot_one = $this->user->trade_real == Carbon::now();
+            $bot_two = $this->user->trade_real == Carbon::now();
+            event(new TredingEvent(Auth::user()->username, $bot_one, $bot_two));
+
             return response()->json(['message' => "LOSE"]);
           }
 
@@ -148,6 +153,10 @@ class FakeController extends Controller
         $this->user->trade_fake = Carbon::now();
         $this->user->save();
 
+        $bot_one = $this->user->trade_real == Carbon::now();
+        $bot_two = $this->user->trade_real == Carbon::now();
+        event(new TredingEvent(Auth::user()->username, $bot_one, $bot_two));
+
         return response()->json(['message' => "WIN"]);
       }
 
@@ -161,7 +170,7 @@ class FakeController extends Controller
    * @param $cookie
    * @return array
    */
-  public static function getBalance($cookie)
+  public static function getBalance($cookie): array
   {
     $data = [
       's' => $cookie,
@@ -189,7 +198,7 @@ class FakeController extends Controller
    * @param $password
    * @return string
    */
-  private static function getCookie($username, $password)
+  private static function getCookie($username, $password): string
   {
     $data = [
       'username' => $username,
