@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Route::middleware(['auth:api'])->group(function () {
-
+Broadcast::channel('arbi.biz.{username}.ticket', function ($user, $id) {
+  return $user->id === $id;
 });
 
-Broadcast::channel('arbi.biz.ticket.{username}', function ($user, $id) {
-  return $user ? true : false;
+Broadcast::channel('arbi.biz.{username}.treding', function ($user, $id) {
+  return $user->id === $id;
 });

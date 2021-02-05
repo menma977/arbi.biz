@@ -10,23 +10,26 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TicketEvent
+class TredingEvent
 {
   use Dispatchable, InteractsWithSockets, SerializesModels;
 
   protected $username;
-  protected $ticket;
+  protected $bot_one;
+  protected $bot_two;
 
   /**
    * Create a new event instance.
    *
    * @param $username
-   * @param $ticket
+   * @param bool $bot_one
+   * @param bool $bot_two
    */
-  public function __construct($username, $ticket)
+  public function __construct($username, $bot_one = false, $bot_two = false)
   {
     $this->username = $username;
-    $this->ticket = $ticket;
+    $this->bot_one = $bot_one;
+    $this->bot_two = $bot_two;
   }
 
   /**
