@@ -8,7 +8,6 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class TicketEvent implements ShouldBroadcast
 {
@@ -36,9 +35,6 @@ class TicketEvent implements ShouldBroadcast
    */
   public function broadcastOn()
   {
-    Log::debug('TICKET EVENT ' . "arbi.biz.{$this->username}");
-    Log::debug($this->username);
-    Log::debug($this->ticket);
-    return new PrivateChannel("private-arbi.biz.{$this->username}");
+    return new PrivateChannel("arbi.biz.{$this->username}");
   }
 }

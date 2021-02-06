@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +13,6 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-Broadcast::channel('private-arbi.biz.{username}', function ($user, $username) {
-  Log::debug('channles.php');
-  Log::debug($user->username);
-  Log::debug($username);
-  return true;
-//  return $user->username === $username;
+Broadcast::channel('arbi.biz.{username}', function ($user, $username) {
+  return $user->username === $username;
 });

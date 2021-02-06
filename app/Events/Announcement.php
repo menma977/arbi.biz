@@ -7,7 +7,6 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class Announcement implements ShouldBroadcast
 {
@@ -38,7 +37,6 @@ class Announcement implements ShouldBroadcast
    */
   public function broadcastOn()
   {
-    Log::debug('announce');
     return new Channel('arbi.biz.announcement');
   }
 }
