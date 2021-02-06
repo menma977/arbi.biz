@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-Broadcast::channel('private-arbi.biz.{username}', function ($user, $username) {
+Broadcast::channel('arbi.biz.{username}', function ($user, $username) {
   Log::debug('channles.php');
   Log::debug($user->username);
   Log::debug($username);
