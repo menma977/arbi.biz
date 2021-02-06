@@ -39,9 +39,9 @@ Route::middleware(['auth:api'])->group(function () {
 
   Route::post('/broadcasting/auth', function (Request $request) {
     Log::debug($request->all());
-    Log::debug(env("PUSHER_APP_KEY") . ":" . hash_hmac("SHA256", $request->post("socket_id") . $request->post("channel_name"), env("PUSHER_APP_SECRET")));
+    Log::debug(env("PUSHER_APP_KEY") . ":" . hash_hmac("SHA256", $request->post("socket_id") . ":" . $request->post("channel_name"), env("PUSHER_APP_SECRET")));
     return response()->json([
-      "auth" => env("PUSHER_APP_KEY") . ":" . hash_hmac("SHA256", $request->post("socket_id") . $request->post("channel_name"), env("PUSHER_APP_SECRET"))
+      "auth" => env("PUSHER_APP_KEY") . ":" . hash_hmac("SHA256", $request->post("socket_id") . ":" . $request->post("channel_name"), env("PUSHER_APP_SECRET"))
     ]);
   });
 
