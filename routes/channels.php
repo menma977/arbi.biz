@@ -19,5 +19,5 @@ Broadcast::channel('private-arbi.biz.{username}', function ($user, $username) {
   Log::debug($user->username);
   Log::debug($username);
   return true;
-  return $user->username === $username;
+//  return $user->username === $username;
 });
