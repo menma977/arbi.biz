@@ -5,15 +5,17 @@ namespace App\Events;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
-class TicketEvent
+class TicketEvent implements ShouldBroadcast
 {
   use Dispatchable, InteractsWithSockets, SerializesModels;
 
-  protected $username;
-  protected $ticket;
+  public $username;
+  public $ticket;
 
   /**
    * Create a new event instance.
@@ -34,6 +36,9 @@ class TicketEvent
    */
   public function broadcastOn()
   {
-    return new PrivateChannel("arbi.biz.{$this->username}.ticket");
+    Log::debug('TICKET EVENT ' . "arbi.biz.{$this->username}");
+    Log::debug($this->username);
+    Log::debug($this->ticket);
+    return new PrivateChannel("private-arbi.biz.{$this->username}");
   }
 }

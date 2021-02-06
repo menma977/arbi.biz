@@ -37,6 +37,6 @@ class TredingEvent
    */
   public function broadcastOn()
   {
-    return new PrivateChannel("arbi.biz.{$this->username}.ticket");
+    return new PrivateChannel("arbi.biz.{$this->username}");
   }
 }

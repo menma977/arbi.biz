@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('arbi.biz.{username}.ticket', function ($user, $id) {
-  return $user->id === $id;
-});
-
-Broadcast::channel('arbi.biz.{username}.treding', function ($user, $id) {
-  return $user->id === $id;
+Broadcast::channel('private-arbi.biz.{username}', function ($user, $username) {
+  Log::debug('channles.php');
+  Log::debug($user->username);
+  Log::debug($username);
+  return true;
+  return $user->username === $username;
 });
