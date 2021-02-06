@@ -39,6 +39,6 @@ class TicketEvent implements ShouldBroadcast
     Log::debug('TICKET EVENT ' . "arbi.biz.{$this->username}");
     Log::debug($this->username);
     Log::debug($this->ticket);
-    return new PrivateChannel("private-arbi.biz.{$this->username}");
+    return new PrivateChannel("arbi.biz.{$this->username}");
   }
 }
