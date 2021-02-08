@@ -9,6 +9,7 @@ use App\Http\Controllers\API\Bot\FakeController;
 use App\Http\Controllers\API\Bot\MartiAngelController;
 use App\Http\Controllers\API\BroadcastAuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\InfoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/info', InfoController::class);
 Route::post('/login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
 
 Route::middleware(['auth:api'])->group(function () {
