@@ -103,9 +103,9 @@ class FakeController extends Controller
             $this->user->trade_fake = Carbon::now();
             $this->user->save();
 
-            $bot_one = $this->user->trade_real == Carbon::now();
+            $bot_one = $this->user->trade_fake == Carbon::now();
             $bot_two = $this->user->trade_real == Carbon::now();
-            event(new TredingEvent(Auth::user()->username, $bot_one, $bot_two));
+            TredingEvent::dispatch(Auth::user()->username, $bot_one, $bot_two);
 
             return response()->json(['message' => "LOSE"]);
           }
