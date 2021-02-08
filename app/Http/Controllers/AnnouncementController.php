@@ -9,6 +9,13 @@ use Illuminate\Validation\ValidationException;
 
 class AnnouncementController extends Controller
 {
+  public function index()
+  {
+    $announcement = Announcement::first();
+
+    return view("announcement.index", $announcement);
+  }
+
   /**
    * @param Request $request
    * @return RedirectResponse

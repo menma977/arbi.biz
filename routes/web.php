@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +24,16 @@ Route::middleware(['auth'])->group(function () {
   Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::get("", [DashboardController::class, 'index'])->name('index');
   });
+
   Route::group(['prefix' => 'notification', 'as' => 'notification.'], function () {
+    Route::get("index", [AnnouncementController::class, 'index'])->name('index');
     Route::post("store", [AnnouncementController::class, 'store'])->name('store');
+  });
+
+  Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
+    Route::get("index", [TicketController::class, 'index'])->name('index');
+    Route::post("store", [TicketController::class, 'store'])->name('store');
+    Route::post("remove", [TicketController::class, 'update'])->name('remove');
   });
 });
 

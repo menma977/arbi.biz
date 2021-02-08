@@ -26,6 +26,23 @@
             </p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="{{ route('notification.index') }}" class="nav-link {{ request()->is(['notification', 'notification/*']) ? 'active' : '' }}">
+            <i class="nav-icon fa fa-paper-plane"></i>
+            <p>
+              Announcement
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ route('ticket.index') }}" class="nav-link {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
+            <i class="nav-icon fa fa-paper-plane"></i>
+            <p>
+              Ticket
+            </p>
+          </a>
+        </li>
 
         <li class="nav-item">
           <a href="{{ route('logout') }}"

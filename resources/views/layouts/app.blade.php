@@ -30,6 +30,21 @@
   @yield('addCss')
 </head>
 
+<style>
+    .select2-selection__rendered {
+        line-height: 38px !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        padding: 2px;
+    }
+
+    .select2-selection__arrow {
+        height: 38px !important;
+    }
+</style>
+
 <body class="sidebar-mini accent-primary">
 <div id="app" class="wrapper">
   <!-- header -->
@@ -88,7 +103,7 @@
     @if(session()->has('message'))
     Toast.fire({
       icon: 'success',
-      title: @json(session()->get('message'))
+      title: @json(session()->get('message'), JSON_THROW_ON_ERROR)
     })
     @endif
 
