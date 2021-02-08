@@ -13,7 +13,11 @@ class AnnouncementController extends Controller
   {
     $announcement = Announcement::first();
 
-    return view("announcement.index", $announcement);
+    $data = [
+      'announcement' => $announcement,
+    ];
+
+    return view("announcement.index", $data);
   }
 
   /**
