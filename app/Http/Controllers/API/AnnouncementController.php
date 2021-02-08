@@ -4,10 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
+use Illuminate\Http\JsonResponse;
 
 class AnnouncementController extends Controller
 {
-  public function index()
+  /**
+   * @return JsonResponse
+   */
+  public function index(): JsonResponse
   {
     $announcement = Announcement::first();
 

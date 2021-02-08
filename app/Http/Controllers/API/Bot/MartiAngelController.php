@@ -28,7 +28,7 @@ class MartiAngelController extends Controller
    * @return JsonResponse
    * @throws ValidationException
    */
-  public function index(Request $request)
+  public function index(Request $request): JsonResponse
   {
     $this->validate($request, [
       'start_balance' => 'required|numeric',

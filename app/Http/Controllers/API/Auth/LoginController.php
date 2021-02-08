@@ -21,7 +21,7 @@ class LoginController extends Controller
    * @param Request $request
    * @return JsonResponse
    */
-  public function __invoke(Request $request)
+  public function __invoke(Request $request): JsonResponse
   {
     if (filter_var($request->username, FILTER_VALIDATE_EMAIL)) {
       $type = 'email';

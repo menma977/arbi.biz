@@ -7,15 +7,16 @@ use App\Models\Binary;
 use App\Models\CoinAuth;
 use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
   /**
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
-  public function index()
+  public function index(): JsonResponse
   {
     $user = User::find(Auth::id());
     $userTicket = Ticket::where("user_id", $user->id);

@@ -44,7 +44,7 @@ class FakeController extends Controller
    * @return JsonResponse
    * @throws ValidationException
    */
-  public function index(Request $request)
+  public function index(Request $request): JsonResponse
   {
     if ($this->user->trade_fake === Carbon::now()) {
       return response()->json(['message' => 'Already trade today'], 500);
