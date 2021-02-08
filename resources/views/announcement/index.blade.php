@@ -29,23 +29,23 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="_title">Title</label>
-                <input type="text" class="form-control" id="_title" name="title" placeholder="Title" value="{{ old("title") ?: $title }}">
+                <input type="text" class="form-control" id="_title" name="title" placeholder="Title" value="{{ old("title") ?: $announcement->title ?? '' }}">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for="_type">Type</label>
                 <select class="form-control" id="_type" name="type">
-                  <option value="info" {{ $type == "info" ? "selected": "" }}>Info</option>
-                  <option value="warning" {{ $type == "warning" ? "selected": "" }}>Warning</option>
-                  <option value="danger" {{ $type == "danger" ? "selected": "" }}>Danger</option>
+                  <option value="info" {{ $announcement->type === "info" ? "selected": "" }}>Info</option>
+                  <option value="warning" {{ $announcement->type === "warning" ? "selected": "" }}>Warning</option>
+                  <option value="danger" {{ $announcement->type === "danger" ? "selected": "" }}>Danger</option>
                 </select>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label for="_message">Message</label>
-            <textarea class="form-control" id="_message" name="message" placeholder="Message" rows="5">{{ old("message") ?: $description }}</textarea>
+            <textarea class="form-control" id="_message" name="message" placeholder="Message" rows="5">{{ old("message") ?: $announcement->description }}</textarea>
           </div>
         </div>
         <div class="card-footer">
