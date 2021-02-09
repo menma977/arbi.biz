@@ -36,8 +36,9 @@ class ForgotPassword extends Mailable
     return $this->view('mail.forgot.password')
       ->from(env("MAIL_FROM_ADDRESS", "admin@Arbi.biz"))
       ->with([
+        "title" => "Forgot password",
         "email" => $this->email,
-        "code" => $this->code
+        "code" => $this->code,
       ]);
   }
 }

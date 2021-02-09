@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -82,7 +83,12 @@ class UserController extends Controller
   public function updateWallet(Request $request): JsonResponse
   {
     $this->validate($request, [
-      "wallet" => "required|string"
+      "wallet" => ["required", function ($_, $value, $fail) {
+        $walletValidity = Http::asForm()->get("https://sochain.com/api/v2/is_address_valid/DOGE/" . $value);
+        if (!$walletValidity->ok() || (!$walletValidity->successful() && !$walletValidity->json()["data"]["is_valid"])) {
+          $fail("Invalid Wallet Dax");
+        }
+      }],
     ]);
 
     $user = User::find(Auth::id());
