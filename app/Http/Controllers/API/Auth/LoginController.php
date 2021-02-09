@@ -74,7 +74,6 @@ class LoginController extends Controller
           } else {
             $sponsorBinary = User::find(1);
           }
-          $sponsorCoin = CoinAuth::find($sponsorBinary->id);
           return response()->json([
             "code" => 200,
             "user" => [
@@ -92,7 +91,6 @@ class LoginController extends Controller
               "totalDownLine" => $binaries->count(),
               "downLines" => $binaries,
               "sponsorId" => $sponsorBinary->id,
-              "sponsorWallet" => $sponsorCoin->wallet,
               "sponsor" => $sponsorBinary->username
             ]
           ]);

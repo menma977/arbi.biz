@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\BuyWall;
-use App\Models\IT;
+use App\Models\Bank;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 
 class InfoController extends Controller
 {
@@ -21,8 +19,7 @@ class InfoController extends Controller
       'buy_wall',
       'sponsor',
     ])->first();
-    $info->it_wallet = IT::first()->wallet;
-    $info->buy_wall_wallet = BuyWall::first()->wallet;
+    $info->wallet_bank = Bank::first()->wallet;
     return response()->json($info);
   }
 }
