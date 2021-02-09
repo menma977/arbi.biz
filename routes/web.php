@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
   Route::group(['prefix' => 'notification', 'as' => 'notification.'], function () {
     Route::get("index", [AnnouncementController::class, 'index'])->name('index');
     Route::post("store", [AnnouncementController::class, 'store'])->name('store');
+    Route::get("delete", [AnnouncementController::class, 'delete'])->name('delete');
   });
 
   Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {

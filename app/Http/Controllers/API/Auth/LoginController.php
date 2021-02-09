@@ -84,6 +84,7 @@ class LoginController extends Controller
               "isSuspended" => $user->suspend,
               "token" => $user->token,
               "cookie" => $coinAccount->cookie,
+              "wallet" => $coinAuth->wallet,
               "walletDax" => $coinAuth->wallet_dax,
               "totalPin" => $ticketOwned,
               "pinSpent" => $ticketSpent,

@@ -21,6 +21,11 @@
     <div class="card card-primary">
       <div class="card-header">
         <h3 class="card-title">Edit Announcement</h3>
+        <div class="card-tools">
+          <a href="{{ route('notification.delete') }}" class="btn btn-tool btn-danger btn-xs">
+            Delete
+          </a>
+        </div>
       </div>
       <form method="post" action="{{ route('notification.store') }}">
         @csrf

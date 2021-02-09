@@ -23,20 +23,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/info', InfoController::class);
-Route::post('/login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
+Route::get('info', InfoController::class);
+Route::post('login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
 
 Route::middleware(['auth:api'])->group(function () {
-  Route::get('/logout', LogoutController::class);
-  Route::post('/register', RegisterController::class);
+  Route::get('logout', LogoutController::class);
+  Route::post('register', RegisterController::class);
 
-  Route::post('/broadcasting/auth', BroadcastAuthController::class);
+  Route::post('broadcasting/auth', BroadcastAuthController::class);
 
-  Route::get('/my', [UserController::class, "index"]);
+  Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::get('profile', [UserController::class, "index"]);
+    Route::group(['prefix' => 'update', 'as' => 'update.'], function () {
+      Route::post('name', [UserController::class, "updateName"]);
+      Route::post('wallet', [UserController::class, "updateWallet"]);
+      Route::post('password', [UserController::class, "updatePassword"]);
+    });
+  });
 
   Route::group(['prefix' => 'bot', 'as' => 'bot.'], function () {
-    Route::get('/fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
-    Route::post('/marti/angel', [MartiAngelController::class, 'index'])->middleware(['throttle:1,1']);
+    Route::get('fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
+    Route::post('marti/angel', [MartiAngelController::class, 'index'])->middleware(['throttle:1,1']);
   });
 
   Route::group(['prefix' => 'binary', 'as' => 'user.binary.'], function () {

@@ -55,4 +55,24 @@ class AnnouncementController extends Controller
 
     return redirect()->back()->with(['message' => 'announce has create']);
   }
+
+  /**
+   * @return RedirectResponse
+   */
+  public function delete(): RedirectResponse
+  {
+    if (Announcement::get()->count()) {
+      $announcement = Announcement::first();
+      $announcement->type = "info";
+      $announcement->title = "";
+      $announcement->description = "";
+      $announcement->save();
+
+      event(new \App\Events\Announcement($announcement->title, $announcement->description, $announcement->type));
+    }
+
+    event(new \App\Events\Announcement("", "", "info"));
+
+    return redirect()->back()->with(['message' => 'announce has delete']);
+  }
 }
