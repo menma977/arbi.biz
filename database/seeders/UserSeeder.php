@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bank;
 use App\Models\CoinAuth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -33,10 +34,16 @@ class UserSeeder extends Seeder
 
     $coinAuth = new CoinAuth();
     $coinAuth->user_id = $user->id;
-    $coinAuth->username = "wallstreet.info";
-    $coinAuth->password = "123456+A";
-    $coinAuth->wallet = "DFyhesdDdogR5QkdhJ6rwCe7JDEi9tCnfh";
-    $coinAuth->wallet_dax = "DFyhesdDdogR5QkdhJ6rwCe7JDEi9tCnfh";
+    $coinAuth->username = "arbi.biz";
+    $coinAuth->password = "123456789";
+    $coinAuth->wallet = "DET3qfAoK6jkMd5fyBdBvHmLfjJ1mVGqTr";
+    $coinAuth->wallet_dax = "DDRXqgUdrmKW8xgtPMbM92HEAWBX3b867C";
     $coinAuth->save();
+
+    $bank = new Bank();
+    $bank->username = "arbi.bank";
+    $bank->password = "123456789";
+    $bank->wallet = "DDRXqgUdrmKW8xgtPMbM92HEAWBX3b867C";
+    $bank->save();
   }
 }
