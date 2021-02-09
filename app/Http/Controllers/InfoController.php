@@ -13,6 +13,9 @@ class InfoController extends Controller
       'version',
       'min_bot',
       'max_bot',
+      'it',
+      'buy_wall',
+      'sponsor',
     ])->first());
   }
 }
