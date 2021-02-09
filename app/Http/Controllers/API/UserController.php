@@ -116,10 +116,19 @@ class UserController extends Controller
     return response()->json(["message" => "password has been changed"]);
   }
 
-  public function requestCode($email): JsonResponse
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   * @throws ValidationException
+   */
+  public function requestCode(Request $request): JsonResponse
   {
+    $this->validate($request, [
+      "email" => "required|email|exists:users,email",
+    ]);
+
     $code = rand(1000, 9999);
-    Mail::to($email)->send(new ForgotPassword($code, $email));
+    Mail::to($request->input("email"))->send(new ForgotPassword($code, $request->input("email")));
 
     return response()->json([
       "uniqueCode" => $code,
@@ -127,8 +136,22 @@ class UserController extends Controller
     ]);
   }
 
-  public function forgotPassword(Request $request)
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   * @throws ValidationException
+   */
+  public function forgotPassword(Request $request): JsonResponse
   {
+    $this->validate($request, [
+      "email" => "required|email|exists:users,email",
+      "password" => "required|string|min:6|same:confirmation_password"
+    ]);
 
+    $user = User::find(Auth::id());
+    $user->password = Hash::make($request->input("password"));
+    $user->save();
+
+    return response()->json(["message" => "password has been changed"]);
   }
 }

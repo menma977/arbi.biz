@@ -26,6 +26,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('info', InfoController::class);
 Route::post('login', LoginController::class)->middleware(['throttle:2,1', 'guest']);
 
+Route::group(['prefix' => 'forgot', 'as' => 'forgot.'], function () {
+  Route::post('email', [UserController::class, "requestCode"]);
+  Route::post('update', [UserController::class, "forgotPassword"]);
+});
+
 Route::middleware(['auth:api'])->group(function () {
   Route::get('logout', LogoutController::class);
   Route::post('register', RegisterController::class);
