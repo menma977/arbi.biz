@@ -36,16 +36,16 @@
               <div class="form-group">
                 <label for="_type">Type</label>
                 <select class="form-control" id="_type" name="type">
-                  <option value="info" {{ $announcement->type === "info" ? "selected": "" }}>Info</option>
-                  <option value="warning" {{ $announcement->type === "warning" ? "selected": "" }}>Warning</option>
-                  <option value="danger" {{ $announcement->type === "danger" ? "selected": "" }}>Danger</option>
+                  <option value="info" {{ $announcement->type ?? null === "info" ? "selected": "" }}>Info</option>
+                  <option value="warning" {{ $announcement->type ?? null === "warning" ? "selected": "" }}>Warning</option>
+                  <option value="danger" {{ $announcement->type ?? null === "danger" ? "selected": "" }}>Danger</option>
                 </select>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label for="_message">Message</label>
-            <textarea class="form-control" id="_message" name="message" placeholder="Message" rows="5">{{ old("message") ?: $announcement->description }}</textarea>
+            <textarea class="form-control" id="_message" name="message" placeholder="Message" rows="5">{{ old("message") ?: $announcement->description ?? '' }}</textarea>
           </div>
         </div>
         <div class="card-footer">
