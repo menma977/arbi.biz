@@ -8,7 +8,7 @@ use App\Http\Controllers\API\Bot\FakeController;
 use App\Http\Controllers\API\Bot\MartiAngelController;
 use App\Http\Controllers\API\BroadcastAuthController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\InfoController;
+use App\Http\Controllers\API\InfoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
