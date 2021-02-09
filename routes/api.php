@@ -49,14 +49,11 @@ Route::middleware(['auth:api'])->group(function () {
   Route::group(['prefix' => 'bot', 'as' => 'bot.'], function () {
     Route::get('fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
     Route::post('marti/angel', [MartiAngelController::class, 'index'])->middleware(['throttle:1,1']);
+    Route::get('marti/angel/store/{balance}', [MartiAngelController::class, 'store']);
   });
 
   Route::group(['prefix' => 'binary', 'as' => 'user.binary.'], function () {
     Route::get("index", [BinaryController::class, 'index'])->name('index');
     Route::get("show", [BinaryController::class, 'show'])->name('show');
   });
-});
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
 });
