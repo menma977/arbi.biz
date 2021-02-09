@@ -1,10 +1,9 @@
 <?php
 
-use App\Events\Announcement;
-use App\Events\TicketEvent;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\LogoutController;
 use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\BinaryController;
 use App\Http\Controllers\API\Bot\FakeController;
 use App\Http\Controllers\API\Bot\MartiAngelController;
 use App\Http\Controllers\API\BroadcastAuthController;
@@ -38,6 +37,11 @@ Route::middleware(['auth:api'])->group(function () {
   Route::group(['prefix' => 'bot', 'as' => 'bot.'], function () {
     Route::get('/fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
     Route::post('/marti/angel', [MartiAngelController::class, 'index'])->middleware(['throttle:1,1']);
+  });
+
+  Route::group(['prefix' => 'binary', 'as' => 'user.binary.'], function () {
+    Route::get("index", [BinaryController::class, 'index'])->name('index');
+    Route::get("show", [BinaryController::class, 'show'])->name('show');
   });
 });
 
