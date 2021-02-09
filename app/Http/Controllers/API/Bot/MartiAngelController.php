@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API\Bot;
 
 use App\Events\TredingEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Binary;
 use App\Models\HistoryBot;
+use App\Models\Queue;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -79,5 +82,39 @@ class MartiAngelController extends Controller
     ];
 
     return response()->json($data);
+  }
+
+  /**
+   * @param $balance
+   * @return JsonResponse
+   */
+  public function store($balance)
+  {
+    $shareIt = $balance * Setting::find()->it;
+    $buyWall = $balance * Setting::find()->buy_wall;
+    $sponsor = $balance * Setting::find()->sponsor;
+
+    $queueIt = new Queue();
+    $queueIt->type = 'it';
+    $queueIt->user_id = 1;
+    $queueIt->value = $shareIt;
+    $queueIt->send = false;
+    $queueIt->save();
+
+    $queueBuyWall = new Queue();
+    $queueBuyWall->type = 'buy_wall';
+    $queueBuyWall->user_id = 1;
+    $queueBuyWall->value = $buyWall;
+    $queueBuyWall->send = false;
+    $queueBuyWall->save();
+
+    $queueSponsor = new Queue();
+    $queueSponsor->type = 'sponsor';
+    $queueSponsor->user_id = Binary::where('down_line', Auth::id())->first()->sponsor;
+    $queueSponsor->value = $sponsor;
+    $queueSponsor->send = false;
+    $queueSponsor->save();
+
+    return response()->json(["message" => "success"]);
   }
 }
