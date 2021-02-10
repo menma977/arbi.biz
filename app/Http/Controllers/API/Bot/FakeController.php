@@ -145,7 +145,7 @@ class FakeController extends Controller
 
         $queue = new Queue();
         $queue->type = 'sponsor';
-        $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor;
+        $queue->user_id = Binary::where('down_line', $this->user->id)->first()->sponsor ?? 1;
         $queue->value = $sponsor;
         $queue->send = false;
         $queue->save();
