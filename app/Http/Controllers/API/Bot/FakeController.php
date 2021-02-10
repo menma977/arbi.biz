@@ -29,7 +29,7 @@ class FakeController extends Controller
   public function index(Request $request): JsonResponse
   {
     $user = Auth::user();
-    $coinAuth = CoinAuth::find($user->id);
+    $coinAuth = CoinAuth::where('user_id', $user->id)->first();
     $bank = Bank::find(1);
     $shareIT = IT::find(1);
     $shareBuyWall = BuyWall::find(1);
@@ -38,10 +38,17 @@ class FakeController extends Controller
     }
 
     $setting = Setting::find(1);
+    $balanceForValidate = number_format($request->input("balance") / 10 ** 8, 8, '.', '');
     $min_bot = number_format($setting->min_bot / 10 ** 8, 8, '.', '');
     $max_bot = number_format($setting->max_bot / 10 ** 8, 8, '.', '');
+    if ($balanceForValidate < $min_bot) {
+      return response()->json(['message' => "The balance must be at least $min_bot"], 500);
+    }
+    if ($balanceForValidate < $max_bot) {
+      return response()->json(['message' => "The balance must be at least $max_bot"], 500);
+    }
     $this->validate($request, [
-      'balance' => 'required|numeric|min:' . $min_bot . '|max:' . $max_bot,
+      'balance' => 'required|numeric',
     ]);
 
     if (!$coinAuth->cookie) {
@@ -85,7 +92,7 @@ class FakeController extends Controller
         if ($post['code'] === 200) {
           $getPrice = HttpController::dogePrice();
           if ($getPrice['code'] === 200) {
-            $balance = number_format($request->balance / 10 ** 8, 8, '.', '');
+            $balance = number_format($request->balance / 10 ** 8, 8, ' . ', '');
             $receiveTicket = ($getPrice['data'] * $balance) / 500000;
             ToolController::loseBot($user->id, $receiveTicket);
 
