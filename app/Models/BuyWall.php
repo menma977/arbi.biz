@@ -23,9 +23,6 @@ class BuyWall extends Model
    * @var array
    */
   protected $fillable = [
-    'username',
-    'password',
-    'cookie',
     'wallet',
   ];
 }

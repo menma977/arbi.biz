@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\BinaryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +19,35 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
+})->name("welcome");
+
+Route::middleware(['auth'])->group(function () {
+  Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::get("", [DashboardController::class, 'index'])->name('index');
+  });
+
+  Route::group(['prefix' => 'notification', 'as' => 'notification.'], function () {
+    Route::get("index", [AnnouncementController::class, 'index'])->name('index');
+    Route::post("store", [AnnouncementController::class, 'store'])->name('store');
+    Route::get("delete", [AnnouncementController::class, 'delete'])->name('delete');
+  });
+
+  Route::group(['prefix' => 'ticket', 'as' => 'ticket.'], function () {
+    Route::get("index", [TicketController::class, 'index'])->name('index');
+    Route::post("store", [TicketController::class, 'store'])->name('store');
+    Route::post("remove", [TicketController::class, 'update'])->name('remove');
+  });
+
+  Route::group(['prefix' => 'binary', 'as' => 'binary.'], function () {
+    Route::get("index", [BinaryController::class, 'index'])->name('index');
+    Route::get("show", [BinaryController::class, 'show'])->name('show');
+  });
+
+  Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
+    Route::get("index", [SettingController::class, 'index'])->name('index');
+    Route::get("show", [SettingController::class, 'show'])->name('show');
+  });
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

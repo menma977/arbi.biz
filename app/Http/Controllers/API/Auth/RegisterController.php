@@ -11,6 +11,7 @@ use App\Models\CoinAuth;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,11 @@ class RegisterController extends Controller
 
   private $PIN_SPENT_ON_REGISTER = 1;
 
-  public function __invoke(Request $request)
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   */
+  public function __invoke(Request $request): JsonResponse
   {
     Logger::info("Register: attempt from (" . $request->ip() . ")");
     $request->validate([
@@ -100,7 +105,7 @@ class RegisterController extends Controller
     }
   }
 
-  private function randomStr($length = 20)
+  private function randomStr($length = 20): string
   {
     $pool = "qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
     return substr(str_shuffle(str_repeat($pool, 5)), 0, $length) . Carbon::now()->format('YmdHis');

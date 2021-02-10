@@ -5,13 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
 use App\Models\CoinAuth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class WithdrawController extends Controller
 {
-
-  public function all()
+  /**
+   * @return JsonResponse
+   */
+  public function all(): JsonResponse
   {
     $response = self::withdraw(Auth::id(), 0);
     if ($response["code"] < 400) {
@@ -23,7 +27,11 @@ class WithdrawController extends Controller
     return response()->json($response, $response["code"]);
   }
 
-  public function partial(Request $request)
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   */
+  public function partial(Request $request): JsonResponse
   {
     $request->validate([
       "amount" => "required|numeric"
@@ -38,7 +46,12 @@ class WithdrawController extends Controller
     return response()->json($response, $response["code"]);
   }
 
-  private static function withdraw($userId, $amount)
+  /**
+   * @param $userId
+   * @param $amount
+   * @return Collection
+   */
+  private static function withdraw($userId, $amount): Collection
   {
     $coinAuth = CoinAuth::where("user_id", "=", $userId);
     return HttpController::post("Withdraw", [
