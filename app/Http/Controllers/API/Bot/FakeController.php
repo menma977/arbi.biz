@@ -72,9 +72,9 @@ class FakeController extends Controller
           'Currency' => 'doge'
         ];
         $post = HttpController::post('Withdraw', $data);
-        if ($post['code'] === 200) {
+        if ($post->code === 200) {
           $getPrice = HttpController::dogePrice();
-          if ($getPrice['code'] === 200) {
+          if ($getPrice->code === 200) {
             $balance = number_format($request->balance / 10 ** 8, 8, ' . ', '');
             $receiveTicket = ($getPrice['data'] * $balance) / 500000;
             ToolController::loseBot($user->id, $receiveTicket);
@@ -107,7 +107,7 @@ class FakeController extends Controller
         'Currency' => 'doge'
       ]);
 
-      if ($post['code'] === 200) {
+      if ($post->code === 200) {
         $queue = new Queue();
         $queue->type = 'it';
         $queue->user_id = 1;
@@ -157,7 +157,7 @@ class FakeController extends Controller
     ];
 
     $post = HttpController::post('GetBalance', $data);
-    if ($post['code'] === 200) {
+    if ($post->code === 200) {
       $data = [
         'code' => 200,
         'message' => 'success load balance',
@@ -186,7 +186,7 @@ class FakeController extends Controller
       'password' => $password,
     ];
     $post = HttpController::post("Login", $data, true);
-    if ($post['code'] === 200) {
+    if ($post->code === 200) {
       return $post['data']['SessionCookie'];
     }
     return "break";
