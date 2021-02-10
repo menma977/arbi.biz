@@ -71,7 +71,7 @@ class FakeController extends Controller
           'Currency' => 'doge'
         ];
         $post = HttpController::post('Withdraw', $data);
-        if ($post->data === 200) {
+        if ($post["code"] === 200) {
           $getPrice = HttpController::dogePrice();
           if ($getPrice->data === 200) {
             $receiveTicket = ($getPrice->data * ($request->balance / 10 ** 8)) / 500000;
@@ -90,7 +90,7 @@ class FakeController extends Controller
           return response()->json(['message' => $getPrice->message], 500);
         }
 
-        return response()->json(['message' => $post->message], 500);
+        return response()->json(['message' => $post["message"]], 500);
       }
 
       $shareIt = $balancePool["balance"] * Setting::find()->it;
@@ -155,7 +155,7 @@ class FakeController extends Controller
     ];
 
     $post = HttpController::post('GetBalance', $data);
-    if ($post['code'] === 200) {
+    if ($post["code"] === 200) {
       return [
         'code' => 200,
         'message' => 'success load balance',
