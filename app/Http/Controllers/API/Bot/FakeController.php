@@ -38,8 +38,10 @@ class FakeController extends Controller
     }
 
     $setting = Setting::find(1);
+    $min_bot = number_format($setting->min_bot / 10 ** 8, 8, '.', '');
+    $max_bot = number_format($setting->max_bot / 10 ** 8, 8, '.', '');
     $this->validate($request, [
-      'balance' => 'required|numeric|min:' . $setting->min_bot . '|max:' . $setting->max_bot,
+      'balance' => 'required|numeric|min:' . $min_bot . '|max:' . $max_bot,
     ]);
 
     if (!$coinAuth->cookie) {
