@@ -47,7 +47,7 @@ Route::middleware(['auth:api'])->group(function () {
   });
 
   Route::group(['prefix' => 'bot', 'as' => 'bot.'], function () {
-    Route::get('fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
+    Route::post('fake', [FakeController::class, 'index'])->middleware(['throttle:1,1']);
     Route::post('marti/angel', [MartiAngelController::class, 'index'])->middleware(['throttle:1,1']);
     Route::get('marti/angel/store/{balance}', [MartiAngelController::class, 'store']);
   });
