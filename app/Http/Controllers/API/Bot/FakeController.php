@@ -74,8 +74,7 @@ class FakeController extends Controller
         if ($post->data === 200) {
           $getPrice = HttpController::dogePrice();
           if ($getPrice->data === 200) {
-            $balance = number_format($request->balance / 10 ** 8, 8, ' . ', '');
-            $receiveTicket = ($getPrice->data * $balance) / 500000;
+            $receiveTicket = ($getPrice->data * ($request->balance / 10 ** 8)) / 500000;
             ToolController::loseBot($user->id, $receiveTicket);
 
             $user->trade_fake = Carbon::now();
