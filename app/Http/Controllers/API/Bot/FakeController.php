@@ -10,7 +10,6 @@ use App\Models\Bank;
 use App\Models\Binary;
 use App\Models\BuyWall;
 use App\Models\CoinAuth;
-use App\Models\IT;
 use App\Models\Queue;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -31,7 +30,6 @@ class FakeController extends Controller
     $user = Auth::user();
     $coinAuth = CoinAuth::where('user_id', $user->id)->first();
     $bank = Bank::find(1);
-    $shareIT = IT::find(1);
     $shareBuyWall = BuyWall::find(1);
     if ($user->trade_fake === Carbon::now()) {
       return response()->json(['message' => 'Already trade today'], 500);
