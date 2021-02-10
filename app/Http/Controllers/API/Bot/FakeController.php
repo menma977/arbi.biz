@@ -40,8 +40,9 @@ class FakeController extends Controller
     if ($balanceForValidate < $min_bot) {
       return response()->json(['message' => "The balance must be at least $min_bot"], 500);
     }
+
     if ($balanceForValidate > $max_bot) {
-      return response()->json(['message' => "The balance must be at least $max_bot"], 500);
+      return response()->json(['message' => "The balance must be at least above $max_bot"], 500);
     }
     $this->validate($request, [
       'balance' => 'required|numeric',

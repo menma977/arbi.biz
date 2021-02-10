@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-light-primary elevation-4">
+<aside class="main-sidebar sidebar-light-danger elevation-4">
   <!-- Brand Logo -->
   <a href="#" class="brand-link">
     <img src="{{ asset('logo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-1"
@@ -37,9 +37,18 @@
 
         <li class="nav-item">
           <a href="{{ route('ticket.index') }}" class="nav-link {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
-            <i class="nav-icon fa fa-paper-plane"></i>
+            <i class="nav-icon fa fas fa-sim-card"></i>
             <p>
               Ticket
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ route('setting.index') }}" class="nav-link {{ request()->is(['setting', 'setting/*']) ? 'active' : '' }}">
+            <i class="nav-icon fa fas fa-wrench"></i>
+            <p>
+              Setting
             </p>
           </a>
         </li>
