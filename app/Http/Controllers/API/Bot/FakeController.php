@@ -14,6 +14,7 @@ use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -146,9 +147,9 @@ class FakeController extends Controller
 
   /**
    * @param $cookie
-   * @return \Illuminate\Support\Collection
+   * @return Collection
    */
-  public static function getBalance($cookie): \Illuminate\Support\Collection
+  public static function getBalance($cookie): Collection
   {
     $data = [
       's' => $cookie,
@@ -157,18 +158,20 @@ class FakeController extends Controller
 
     $post = HttpController::post('GetBalance', $data);
     if ($post['code'] === 200) {
-      return collect([
+      $data = [
         'code' => 200,
         'message' => 'success load balance',
         'balance' => $post['data']['Balance'],
-      ]);
+      ];
+    } else {
+      $data = [
+        'code' => 500,
+        'message' => 'failed load balance',
+        'balance' => 0,
+      ];
     }
 
-    return collect([
-      'code' => 500,
-      'message' => 'failed load balance',
-      'balance' => 0,
-    ]);
+    return collect($data);
   }
 
   /**
