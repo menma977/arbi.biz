@@ -146,9 +146,9 @@ class FakeController extends Controller
 
   /**
    * @param $cookie
-   * @return array
+   * @return \Illuminate\Support\Collection
    */
-  public static function getBalance($cookie): array
+  public static function getBalance($cookie): \Illuminate\Support\Collection
   {
     $data = [
       's' => $cookie,
@@ -157,18 +157,18 @@ class FakeController extends Controller
 
     $post = HttpController::post('GetBalance', $data);
     if ($post['code'] === 200) {
-      return [
+      return collect([
         'code' => 200,
         'message' => 'success load balance',
         'balance' => $post['data']['Balance'],
-      ];
+      ]);
     }
 
-    return [
+    return collect([
       'code' => 500,
       'message' => 'failed load balance',
       'balance' => 0,
-    ];
+    ]);
   }
 
   /**
