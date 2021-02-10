@@ -76,23 +76,21 @@ class LoginController extends Controller
           }
           return response()->json([
             "code" => 200,
-            "user" => [
-              "username" => $user->username,
-              "email" => $user->email,
-              "hasTradedReal" => Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) > 0,
-              "hasTradedFake" => Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) > 0,
-              "isSuspended" => $user->suspend,
-              "token" => $user->token,
-              "cookie" => $coinAccount->cookie,
-              "wallet" => $coinAuth->wallet,
-              "walletDax" => $coinAuth->wallet_dax,
-              "totalPin" => $ticketOwned,
-              "pinSpent" => $ticketSpent,
-              "totalDownLine" => $binaries->count(),
-              "downLines" => $binaries,
-              "sponsorId" => $sponsorBinary->id,
-              "sponsor" => $sponsorBinary->username
-            ]
+            "username" => $user->username,
+            "email" => $user->email,
+            "hasTradedReal" => Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) > 0,
+            "hasTradedFake" => Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) > 0,
+            "isSuspended" => $user->suspend,
+            "token" => $user->token,
+            "cookie" => $coinAccount->cookie,
+            "wallet" => $coinAuth->wallet,
+            "walletDax" => $coinAuth->wallet_dax,
+            "totalPin" => $ticketOwned,
+            "pinSpent" => $ticketSpent,
+            "totalDownLine" => $binaries->count(),
+            "downLines" => $binaries,
+            "sponsorId" => $sponsorBinary->id,
+            "sponsor" => $sponsorBinary->username,
           ]);
         }
 
