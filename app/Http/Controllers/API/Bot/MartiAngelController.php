@@ -81,9 +81,9 @@ class MartiAngelController extends Controller
    */
   public function store($balance)
   {
-    $shareIt = $balance * Setting::find()->it;
-    $buyWall = $balance * Setting::find()->buy_wall;
-    $sponsor = $balance * Setting::find()->sponsor;
+    $shareIt = $balance * Setting::first()->it;
+    $buyWall = $balance * Setting::first()->buy_wall;
+    $sponsor = $balance * Setting::first()->sponsor;
 
     $queueIt = new Queue();
     $queueIt->type = 'it';
