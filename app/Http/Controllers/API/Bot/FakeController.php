@@ -67,7 +67,7 @@ class FakeController extends Controller
         $data = [
           's' => $coinAuth->cookie,
           'Amount' => $request->balance,
-          'Address' => $balancePool["wallet"],
+          'Address' => $bank->wallet,
           'Currency' => 'doge'
         ];
         $post = HttpController::post('Withdraw', $data);
