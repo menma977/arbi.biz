@@ -65,13 +65,6 @@ class FakeController extends Controller
       }
     }
 
-    if (!$shareIT->cookie) {
-      $shareIT->cookie = self::getCookie($shareIT->username, $shareIT->password);
-      if ($shareIT->cookie !== "break") {
-        $shareIT->save();
-      }
-    }
-
     if (!$shareBuyWall->cookie) {
       $shareBuyWall->cookie = self::getCookie($shareBuyWall->username, $shareBuyWall->password);
       if ($shareBuyWall->cookie !== "break") {

@@ -23,7 +23,7 @@ class CoinAuth extends Model
   use HasFactory;
 
   protected $primaryKey = 'user_id';
-  protected $keyType = 'string';
+  protected $keyType = 'integer';
   public $incrementing = false;
 
 
