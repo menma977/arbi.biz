@@ -8,7 +8,6 @@ use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ToolController;
 use App\Models\Bank;
 use App\Models\Binary;
-use App\Models\BuyWall;
 use App\Models\CoinAuth;
 use App\Models\Queue;
 use App\Models\Setting;
@@ -30,7 +29,6 @@ class FakeController extends Controller
     $user = Auth::user();
     $coinAuth = CoinAuth::where('user_id', $user->id)->first();
     $bank = Bank::find(1);
-    $shareBuyWall = BuyWall::find(1);
     if ($user->trade_fake === Carbon::now()) {
       return response()->json(['message' => 'Already trade today'], 500);
     }
@@ -60,13 +58,6 @@ class FakeController extends Controller
       $bank->cookie = self::getCookie($bank->username, $bank->password);
       if ($bank->cookie !== "break") {
         $bank->save();
-      }
-    }
-
-    if (!$shareBuyWall->cookie) {
-      $shareBuyWall->cookie = self::getCookie($shareBuyWall->username, $shareBuyWall->password);
-      if ($shareBuyWall->cookie !== "break") {
-        $shareBuyWall->save();
       }
     }
 
