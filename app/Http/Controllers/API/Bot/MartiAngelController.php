@@ -16,16 +16,6 @@ use Illuminate\Validation\ValidationException;
 
 class MartiAngelController extends Controller
 {
-  protected $user;
-
-  /**
-   * FakeController constructor.
-   */
-  public function __construct()
-  {
-    $this->user = Auth::user();
-  }
-
   /**
    * @param Request $request
    * @return JsonResponse
@@ -33,6 +23,7 @@ class MartiAngelController extends Controller
    */
   public function index(Request $request): JsonResponse
   {
+    $user = Auth::user();
     $this->validate($request, [
       'start_balance' => 'required|numeric',
       'end_balance' => 'required|numeric',
@@ -58,15 +49,15 @@ class MartiAngelController extends Controller
     $historyBot->status = $request->status;
     if ($historyBot->start_balance >= $historyBot->target_balance) {
       $historyBot->is_finish = true;
-      $this->user->trade_real = Carbon::now();
-      $this->user->save();
+      $user->trade_real = Carbon::now();
+      $user->save();
     } else {
       $historyBot->is_finish = false;
     }
     $historyBot->save();
 
-    $bot_one = $this->user->trade_fake == Carbon::now();
-    $bot_two = $this->user->trade_real == Carbon::now();
+    $bot_one = $user->trade_fake == Carbon::now();
+    $bot_two = $user->trade_real == Carbon::now();
     TredingEvent::dispatch(Auth::user()->username, $bot_one, $bot_two);
 
     $data = [
