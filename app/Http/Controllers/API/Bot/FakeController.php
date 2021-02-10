@@ -14,7 +14,6 @@ use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -63,18 +62,18 @@ class FakeController extends Controller
     }
 
     $balancePool = self::getBalance($bank->cookie);
-    if ($balancePool->code === 200) {
-      if ($request->balance > ($balancePool->balance - Queue::where('send', false)->sum('value')) || $request->balance < (1000 * 10 ** 8)) {
+    if ($balancePool["code"] === 200) {
+      if ($request->balance > ($balancePool["balance"] - Queue::where('send', false)->sum('value')) || $request->balance < (1000 * 10 ** 8)) {
         $data = [
           's' => $coinAuth->cookie,
           'Amount' => $request->balance,
-          'Address' => $balancePool->wallet,
+          'Address' => $balancePool["wallet"],
           'Currency' => 'doge'
         ];
         $post = HttpController::post('Withdraw', $data);
-        if ($post->code === 200) {
+        if ($post['code'] === 200) {
           $getPrice = HttpController::dogePrice();
-          if ($getPrice->code === 200) {
+          if ($getPrice['code'] === 200) {
             $balance = number_format($request->balance / 10 ** 8, 8, ' . ', '');
             $receiveTicket = ($getPrice['data'] * $balance) / 500000;
             ToolController::loseBot($user->id, $receiveTicket);
@@ -95,10 +94,10 @@ class FakeController extends Controller
         return response()->json(['message' => $post->message], 500);
       }
 
-      $shareIt = $balancePool->balance * Setting::find()->it;
-      $buyWall = $balancePool->balance * Setting::find()->buy_wall;
-      $sponsor = $balancePool->balance * Setting::find()->sponsor;
-      $remainingBalance = $balancePool->balance - ($shareIt + $buyWall + $sponsor);
+      $shareIt = $balancePool["balance"] * Setting::find()->it;
+      $buyWall = $balancePool["balance"] * Setting::find()->buy_wall;
+      $sponsor = $balancePool["balance"] * Setting::find()->sponsor;
+      $remainingBalance = $balancePool["balance"] - ($shareIt + $buyWall + $sponsor);
 
       $post = HttpController::post('Withdraw', [
         's' => $bank->cookie,
@@ -107,7 +106,7 @@ class FakeController extends Controller
         'Currency' => 'doge'
       ]);
 
-      if ($post->code === 200) {
+      if ($post['code'] === 200) {
         $queue = new Queue();
         $queue->type = 'it';
         $queue->user_id = 1;
@@ -142,14 +141,14 @@ class FakeController extends Controller
       return response()->json(['message' => "access rejected. you can try again"]);
     }
 
-    return response()->json(['message' => $balancePool->message], 500);
+    return response()->json(['message' => $balancePool["message"]], 500);
   }
 
   /**
    * @param $cookie
-   * @return Collection
+   * @return array
    */
-  public static function getBalance($cookie): Collection
+  public static function getBalance($cookie): array
   {
     $data = [
       's' => $cookie,
@@ -157,21 +156,19 @@ class FakeController extends Controller
     ];
 
     $post = HttpController::post('GetBalance', $data);
-    if ($post->code === 200) {
-      $data = [
+    if ($post['code'] === 200) {
+      return [
         'code' => 200,
         'message' => 'success load balance',
         'balance' => $post['data']['Balance'],
       ];
-    } else {
-      $data = [
-        'code' => 500,
-        'message' => 'failed load balance',
-        'balance' => 0,
-      ];
     }
 
-    return collect($data);
+    return [
+      'code' => 500,
+      'message' => 'failed load balance',
+      'balance' => 0,
+    ];
   }
 
   /**
@@ -186,7 +183,7 @@ class FakeController extends Controller
       'password' => $password,
     ];
     $post = HttpController::post("Login", $data, true);
-    if ($post->code === 200) {
+    if ($post['code'] === 200) {
       return $post['data']['SessionCookie'];
     }
     return "break";
