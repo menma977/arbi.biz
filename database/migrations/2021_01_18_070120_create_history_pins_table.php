@@ -16,7 +16,7 @@ class CreateHistoryPinsTable extends Migration
     Schema::create('history_pins', function (Blueprint $table) {
       $table->timestamps();
       $table->bigInteger('user_id')->index();
-      $table->lineString('description')->nullable();
+      $table->string('description')->nullable();
       $table->decimal('value')->default(0);
     });
   }
