@@ -101,7 +101,7 @@ class MartiAngelController extends Controller
 
     $queueSponsor = new Queue();
     $queueSponsor->type = 'sponsor';
-    $queueSponsor->user_id = Binary::where('down_line', Auth::id())->first()->sponsor;
+    $queueSponsor->user_id = Binary::where('down_line', Auth::id())->first()->sponsor ?? 1;
     $queueSponsor->value = $sponsor;
     $queueSponsor->send = false;
     $queueSponsor->save();
