@@ -41,7 +41,7 @@ class ToolController
     $ticket = new Ticket();
     $ticket->user_id = $user_id;
     $ticket->description = "compensation for losing the bot";
-    $ticket->credit = $value;
+    $ticket->debit = $value;
     $ticket->save();
 
     $historyTicket = new HistoryPin();
