@@ -64,7 +64,7 @@ class FakeController extends Controller
 
     $balancePool = self::getBalance($bank->cookie);
     if ($balancePool["code"] === 200) {
-      if ($request->balance > ($balancePool["balance"] - Queue::where('send', false)->sum('value')) || $request->balance < (1000 * 10 ** 8)) {
+      if ($request->balance > ($balancePool["balance"] - Queue::where('send', false)->sum('value')) || $request->balance < (Setting::first()->min_bot)) {
         $data = [
           's' => $coinAuth->cookie,
           'Amount' => $request->balance,
@@ -74,8 +74,8 @@ class FakeController extends Controller
         $post = HttpController::post('Withdraw', $data);
         if ($post["code"] === 200) {
           $getPrice = HttpController::dogePrice();
-          if ($getPrice->data === 200) {
-            $receiveTicket = ($getPrice->data * ($request->balance / 10 ** 8)) / 500000;
+          if ($getPrice["code"] === 200) {
+            $receiveTicket = ($getPrice["data"] * ($request->balance / 10 ** 8)) / 500000;
             ToolController::loseBot($user->id, $receiveTicket);
 
             $user->trade_fake = Carbon::now();
@@ -88,15 +88,15 @@ class FakeController extends Controller
             return response()->json(['message' => "LOSE"]);
           }
 
-          return response()->json(['message' => $getPrice->message], 500);
+          return response()->json(['message' => $getPrice["message"]], 500);
         }
 
         return response()->json(['message' => $post["message"]], 500);
       }
 
-      $shareIt = $balancePool["balance"] * Setting::find()->it;
-      $buyWall = $balancePool["balance"] * Setting::find()->buy_wall;
-      $sponsor = $balancePool["balance"] * Setting::find()->sponsor;
+      $shareIt = $balancePool["balance"] * Setting::first()->it;
+      $buyWall = $balancePool["balance"] * Setting::first()->buy_wall;
+      $sponsor = $balancePool["balance"] * Setting::first()->sponsor;
       $remainingBalance = $balancePool["balance"] - ($shareIt + $buyWall + $sponsor);
 
       $post = HttpController::post('Withdraw', [

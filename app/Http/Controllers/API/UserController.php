@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -146,8 +147,7 @@ class UserController extends Controller
       "email" => "required|email|exists:users,email",
       "password" => "required|string|min:6|same:confirmation_password"
     ]);
-
-    $user = User::find(Auth::id());
+    $user = User::where("email", $request->input("email"))->first();
     $user->password = Hash::make($request->input("password"));
     $user->save();
 
