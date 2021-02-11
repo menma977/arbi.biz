@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BinaryController;
 use App\Http\Controllers\API\Bot\FakeController;
 use App\Http\Controllers\API\Bot\MartiAngelController;
 use App\Http\Controllers\API\BroadcastAuthController;
+use App\Http\Controllers\API\TicketController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\InfoController;
 use Illuminate\Support\Facades\Route;
@@ -54,5 +55,10 @@ Route::middleware(['auth:api'])->group(function () {
   Route::group(['prefix' => 'binary', 'as' => 'user.binary.'], function () {
     Route::get("index", [BinaryController::class, 'index'])->name('index');
     Route::get("show", [BinaryController::class, 'show'])->name('show');
+  });
+
+  Route::group(['prefix' => 'pin', 'as' => 'user.pin.'], function () {
+    Route::get("index", [TicketController::class, 'index'])->name('index');
+    Route::post("store", [TicketController::class, 'store'])->name('store');
   });
 });
