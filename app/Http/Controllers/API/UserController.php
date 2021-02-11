@@ -47,6 +47,7 @@ class UserController extends Controller
       "lastTradeReal" => $user->trade_real ? Carbon::parse($user->trade_real)->format("d-m-y h:m:s") : false,
       "lastTradeFake" => $user->trade_fake ? Carbon::parse($user->trade_fake)->format("d-m-y h:m:s") : false,
       "cookie" => $coinAuth->cookie,
+      "wallet" => $coinAuth->wallet,
       "walletDax" => $coinAuth->wallet_dax,
       "totalPin" => $ticketOwned,
       "pinSpent" => $ticketSpent,
