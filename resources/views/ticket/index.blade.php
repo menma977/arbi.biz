@@ -29,7 +29,7 @@
                 <option class="dropdown-item" value="{{ $user->id }}">{{ $user->username }}</option>
               @endforeach
             </select>
-            <input type="number" class="form-control" id="addTicket" name="total" placeholder="Enter total" value="{{ old("total") }}">
+            <input type="text" class="form-control" id="addTicket" name="total" placeholder="Enter total" value="{{ old("total") }}">
             <div class="input-group-append">
               <button type="submit" class="btn btn-success">Send!</button>
             </div>
@@ -44,7 +44,7 @@
                 <option class="dropdown-item" value="{{ $user->id }}">{{ $user->username }}</option>
               @endforeach
             </select>
-            <input type="number" class="form-control" id="removeTicket" name="total" placeholder="Enter total" value="{{ old("total") }}">
+            <input type="text" class="form-control" id="removeTicket" name="total" placeholder="Enter total" value="{{ old("total") }}">
             <div class="input-group-append">
               <button type="submit" class="btn btn-danger">Remove!</button>
             </div>
