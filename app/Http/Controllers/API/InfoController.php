@@ -5,10 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 
 class InfoController extends Controller
 {
-  public function __invoke()
+  /**
+   * @return JsonResponse
+   */
+  public function __invoke(): JsonResponse
   {
     $setting = Setting::first();
     $bank = Bank::first();
