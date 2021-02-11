@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ForgotPassword;
+use App\Models\Bank;
 use App\Models\Binary;
 use App\Models\CoinAuth;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -37,6 +39,8 @@ class UserController extends Controller
     } else {
       $sponsorBinary = User::find(1);
     }
+    $setting = Setting::first();
+    $bank = Bank::first();
     return response()->json([
       "code" => 200,
       "username" => $user->username,
@@ -49,12 +53,18 @@ class UserController extends Controller
       "cookie" => $coinAuth->cookie,
       "wallet" => $coinAuth->wallet,
       "walletDax" => $coinAuth->wallet_dax,
-      "totalPin" => number_format($ticketOwned * 10 ** 8, 8, '', ''),
-      "pinSpent" => number_format($ticketSpent * 10 ** 8, 8, '', ''),
+      "totalPin" => number_format($ticketOwned, 8, '', ''),
+      "pinSpent" => number_format($ticketSpent, 8, '', ''),
       "totalDownLine" => $binaries->count(),
       "downLines" => $binaries,
       "sponsorId" => $sponsorBinary->id,
-      "sponsor" => $sponsorBinary->username
+      "sponsor" => $sponsorBinary->username,
+      "min_bot" => $setting->max_bot,
+      "max_bot" => $setting->min_bot,
+      "wallet_bank" => $bank->wallet,
+      "it" => $setting->it,
+      "buy_wall" => $setting->buy_wall,
+      "sponsor_share" => $setting->sponsor,
     ]);
   }
 

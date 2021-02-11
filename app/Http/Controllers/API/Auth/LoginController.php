@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API\Auth;
 use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
+use App\Models\Bank;
 use App\Models\Binary;
 use App\Models\CoinAuth;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -74,6 +76,8 @@ class LoginController extends Controller
           } else {
             $sponsorBinary = User::find(1);
           }
+          $setting = Setting::first();
+          $bank = Bank::first();
           return response()->json([
             "code" => 200,
             "username" => $user->username,
@@ -85,12 +89,18 @@ class LoginController extends Controller
             "cookie" => $coinAccount->cookie,
             "wallet" => $coinAuth->wallet,
             "walletDax" => $coinAuth->wallet_dax,
-            "totalPin" => number_format($ticketOwned * 10 ** 8, 8, '', ''),
-            "pinSpent" => number_format($ticketSpent * 10 ** 8, 8, '', ''),
+            "totalPin" => number_format($ticketOwned, 8, '', ''),
+            "pinSpent" => number_format($ticketSpent, 8, '', ''),
             "totalDownLine" => $binaries->count(),
             "downLines" => $binaries,
             "sponsorId" => $sponsorBinary->id,
             "sponsor" => $sponsorBinary->username,
+            "min_bot" => $setting->max_bot,
+            "max_bot" => $setting->min_bot,
+            "wallet_bank" => $bank->wallet,
+            "it" => $setting->it,
+            "buy_wall" => $setting->buy_wall,
+            "sponsor_share" => $setting->sponsor,
           ]);
         }
 
