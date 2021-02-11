@@ -8,6 +8,7 @@ use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ToolController;
 use App\Models\Binary;
 use App\Models\CoinAuth;
+use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -41,6 +42,14 @@ class RegisterController extends Controller
         }
       }]
     ]);
+
+    $userTicket = Ticket::where("user_id", Auth::id());
+    $ticketSpent = $userTicket->sum("credit");
+    $ticketOwned = $userTicket->sum("debit") - $ticketSpent;
+    if ($ticketOwned < $this->PIN_SPENT_ON_REGISTER) {
+      return response()->json(["message" => "Insufficient PIN"], 400);
+    }
+
     try {
       $dogeAccount = HttpController::post("CreateAccount", null, true);
       if ($dogeAccount["code"] < 400) {
@@ -72,6 +81,7 @@ class RegisterController extends Controller
             ]);
             $binary->save();
             $coinAuth = new CoinAuth([
+              "user_id" => $user->id,
               "wallet_dax" => $request->wallet_dax,
               "wallet" => $wallet["Address"],
               "username" => $username_coin,
