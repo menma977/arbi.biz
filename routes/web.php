@@ -54,7 +54,9 @@ Route::middleware(['auth'])->group(function () {
 
   Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get("index", [SettingController::class, 'index'])->name('index');
-    Route::get("show", [SettingController::class, 'show'])->name('show');
+    Route::get("maintenance/{switch}", [SettingController::class, 'maintenance'])->name('maintenance');
+    Route::post("version", [SettingController::class, 'version'])->name('version');
+    Route::post("bot", [SettingController::class, 'bot'])->name('bot');
   });
 });
 

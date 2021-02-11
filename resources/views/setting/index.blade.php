@@ -21,10 +21,10 @@
     <div class="card card-outline card-danger">
       <div class="card-body">
         <div class="btn-group btn-block mb-3">
-          <a href="#" class="btn btn-outline-success {{ $setting->maintenance ? '' : 'active' }}">Open Server</a>
-          <a href="#" class="btn btn-outline-danger {{ $setting->maintenance ? 'active' : '' }}">Maintenance</a>
+          <a href="{{ route("setting.maintenance", 0) }}" class="btn btn-outline-success {{ $setting->maintenance ? '' : 'active' }}">Open Server</a>
+          <a href="{{ route("setting.maintenance", 1) }}" class="btn btn-outline-danger {{ $setting->maintenance ? 'active' : '' }}">Maintenance</a>
         </div>
-        <form method="post" action="#" class="mb-3">
+        <form method="post" action="{{ route("setting.version") }}" class="mb-3">
           @csrf
           <label for="_version">Edit Version</label>
           <div class="input-group">
@@ -41,7 +41,7 @@
       <div class="card-header">
         <h3 class="card-title">Bot Setting</h3>
       </div>
-      <form method="post" action="#">
+      <form method="post" action="{{ route('setting.bot') }}">
         @csrf
         <div class="card-body">
           <div class="input-group mb-3">
@@ -88,7 +88,7 @@
                 <div class="input-group-append">
                   <label for="_sponsor" class="input-group-text">Sponsor</label>
                 </div>
-                <input type="number" class="form-control" name="Sponsor" id="_sponsor" value="{{ old('it') ?? $setting->sponsor * 100 }}">
+                <input type="number" class="form-control" name="sponsor" id="_sponsor" value="{{ old('it') ?? $setting->sponsor * 100 }}">
                 <div class="input-group-append">
                   <label for="_sponsor" class="input-group-text">%</label>
                 </div>
