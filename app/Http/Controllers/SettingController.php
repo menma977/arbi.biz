@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Bot;
 use App\Events\Maintenance;
 use App\Models\Setting;
 use Illuminate\Contracts\Foundation\Application;
@@ -89,6 +90,8 @@ class SettingController extends Controller
     $setting->buy_wall = $request->input("buy_wall") / 100;
     $setting->sponsor = $request->input("sponsor") / 100;
     $setting->save();
+
+    event(new Bot($setting->min_bot, $setting->max_bot, $setting->it, $setting->sponsor, $setting->buy_wall));
 
     return redirect()->back()->with(["message" => "BOT has been update"]);
   }
