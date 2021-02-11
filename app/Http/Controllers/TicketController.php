@@ -73,7 +73,7 @@ class TicketController extends Controller
     $ticket = new Ticket();
     $ticket->user_id = $user->id;
     $ticket->credit = $request->input('total');
-    $ticket->description = "Admin Add Ticket";
+    $ticket->description = "Admin remove Ticket";
     $ticket->save();
 
     self::pushEvent($user);

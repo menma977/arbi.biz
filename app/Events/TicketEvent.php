@@ -25,7 +25,7 @@ class TicketEvent implements ShouldBroadcast
   public function __construct($username, $ticket)
   {
     $this->username = $username;
-    $this->ticket = number_format($ticket * 10 ** 8, 8, '', '');
+    $this->ticket = number_format($ticket, 8, '', '');
   }
 
   /**

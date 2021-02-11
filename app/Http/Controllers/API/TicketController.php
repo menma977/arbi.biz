@@ -47,17 +47,19 @@ class TicketController extends Controller
     $user = User::where("id", $coinUser->user_id)->first();
 
     $ticketDebit = new Ticket();
+    $ticketDebit->description = $user->username . " have received " . $request->input("total") . " ticket from " . Auth::user()->username;
     $ticketDebit->user_id = $coinUser->user_id;
     $ticketDebit->debit = $request->input("total");
     $ticketDebit->save();
 
     $ticketDebit = new Ticket();
+    $ticketDebit->description = Auth::user()->username . " have given " . $request->input("total") . " ticket to " . $user->username;
     $ticketDebit->user_id = Auth::id();
     $ticketDebit->credit = $request->input("total");
     $ticketDebit->save();
 
-    event(new TicketEvent($user->username, self::totalTicket($coinUser->user_id) - $request->input("total")));
-    event(new TicketEvent(Auth::user()->username, self::totalTicket(Auth::user()->username) - $request->input("total")));
+    event(new TicketEvent($user->username, self::totalTicket($coinUser->user_id)));
+    event(new TicketEvent(Auth::user()->username, self::totalTicket(Auth::user()->username)));
 
     return response()->json(["message" => "ticket has been send"]);
   }
