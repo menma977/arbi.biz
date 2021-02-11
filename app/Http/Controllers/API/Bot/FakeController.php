@@ -138,7 +138,7 @@ class FakeController extends Controller
         return response()->json(['message' => "WIN"]);
       }
 
-      return response()->json(['message' => "access rejected. you can try again"]);
+      return response()->json(['message' => "access rejected. you can try again"], 500);
     }
 
     return response()->json(['message' => $balancePool["message"]], 500);
