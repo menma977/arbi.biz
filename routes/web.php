@@ -18,6 +18,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/clear', function () {
+  \Illuminate\Support\Facades\Artisan::call("websockets:clean");
+  \Illuminate\Support\Facades\Artisan::call("view:clear");
+  \Illuminate\Support\Facades\Artisan::call("cache:clear");
+  \Illuminate\Support\Facades\Artisan::call("optimize:clear");
+  return redirect()->route('welcome');
+})->name("welcome");
+
 Route::get('/', function () {
   return view('welcome');
 })->name("welcome");
