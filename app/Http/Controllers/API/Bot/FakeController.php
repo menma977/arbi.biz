@@ -97,7 +97,7 @@ class FakeController extends Controller
       $shareIt = $balancePool["balance"] * Setting::first()->it;
       $buyWall = $balancePool["balance"] * Setting::first()->buy_wall;
       $sponsor = $balancePool["balance"] * Setting::first()->sponsor;
-      $remainingBalance = $balancePool["balance"] - ($shareIt + $buyWall + $sponsor);
+      $remainingBalance = number_format($balancePool["balance"] - ($shareIt + $buyWall + $sponsor), 0, '', '');
 
       $post = HttpController::post('Withdraw', [
         's' => $bank->cookie,
@@ -105,6 +105,10 @@ class FakeController extends Controller
         'Address' => $coinAuth->wallet,
         'Currency' => 'doge'
       ]);
+      \Log::info($post);
+      \Log::info("'s' => $bank->cookie");
+      \Log::info("'Amount' => $remainingBalance");
+      \Log::info("'Address' => $coinAuth->wallet");
 
       if ($post['code'] === 200) {
         $queue = new Queue();
