@@ -75,7 +75,7 @@ class FakeController extends Controller
         if ($post["code"] === 200) {
           $getPrice = HttpController::dogePrice();
           if ($getPrice["code"] === 200) {
-            $receiveTicket = ($getPrice["data"] * ($request->balance / 10 ** 8)) / 500000;
+            $receiveTicket = number_format(($getPrice["data"] * ($request->balance / 10 ** 8)) / 500000, 8, '.', '');
             ToolController::loseBot($user->id, $receiveTicket);
 
             $user->trade_fake = Carbon::now();
@@ -105,10 +105,6 @@ class FakeController extends Controller
         'Address' => $coinAuth->wallet,
         'Currency' => 'doge'
       ]);
-      \Log::info($post);
-      \Log::info("'s' => $bank->cookie");
-      \Log::info("'Amount' => $remainingBalance");
-      \Log::info("'Address' => $coinAuth->wallet");
 
       if ($post['code'] === 200) {
         $queue = new Queue();
