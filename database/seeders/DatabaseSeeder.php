@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
     $this->call(ListUrlSeeder::class);
     $this->call(SettingSeeder::class);
     $this->call(TicketSeeder::class);
+
+    $this->call(BuyWallSeeder::class);
+    $this->call(ITSeeder::class);
   }
 }
