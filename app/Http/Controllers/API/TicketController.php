@@ -16,16 +16,13 @@ class TicketController extends Controller
 {
   protected $ticket;
 
-  public function __construct()
-  {
-    $this->ticket = Ticket::where("user_id", Auth::id())->sum("debit") - Ticket::where("user_id", Auth::id())->sum("credit");
-  }
-
   /**
    * @return JsonResponse
    */
   public function index(): JsonResponse
   {
+    $this->ticket = Ticket::where("user_id", Auth::id())->sum("debit") - Ticket::where("user_id", Auth::id())->sum("credit");
+
     $data = [
       "ticket" => $this->ticket,
     ];
@@ -40,6 +37,7 @@ class TicketController extends Controller
    */
   public function store(Request $request): JsonResponse
   {
+    $this->ticket = Ticket::where("user_id", Auth::id())->sum("debit") - Ticket::where("user_id", Auth::id())->sum("credit");
     $this->validate($request, [
       "total" => "required|min:0.00000001|max:$this->ticket",
       "wallet" => "required|exists:coin_auths,wallet"
