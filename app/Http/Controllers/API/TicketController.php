@@ -39,7 +39,7 @@ class TicketController extends Controller
   {
     $this->ticket = Ticket::where("user_id", Auth::id())->sum("debit") - Ticket::where("user_id", Auth::id())->sum("credit");
     $this->validate($request, [
-      "total" => "required|min:0.00000001|max:$this->ticket",
+      "total" => "required|numeric|min:0.00000001|max:$this->ticket",
       "wallet" => "required|exists:coin_auths,wallet"
     ]);
 
