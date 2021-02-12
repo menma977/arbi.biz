@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Auth;
 
+use App\Events\LogOut;
 use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
@@ -64,6 +65,7 @@ class LoginController extends Controller
             }
           }
           // TODO: Change token name
+          LogOut::dispatch($user->username);
           $user->token = $user->createToken('API.' . $user->username)->accessToken;
           $userTicket = Ticket::where("user_id", $user->id);
           $ticketSpent = $userTicket->sum("credit");
