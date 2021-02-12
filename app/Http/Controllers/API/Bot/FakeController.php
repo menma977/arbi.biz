@@ -29,7 +29,7 @@ class FakeController extends Controller
     $user = Auth::user();
     $coinAuth = CoinAuth::where('user_id', $user->id)->first();
     $bank = Bank::find(1);
-    if ($user->trade_fake === Carbon::now()) {
+    if (Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) < 1) {
       return response()->json(['message' => 'Already trade today'], 500);
     }
 
