@@ -6,6 +6,7 @@ use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ToolController;
+use App\Mail\Register;
 use App\Models\Binary;
 use App\Models\CoinAuth;
 use App\Models\Ticket;
@@ -92,6 +93,7 @@ class RegisterController extends Controller
             ]);
             $coinAuth->save();
             ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
+            event(new Register($request->email, $request->username, $request->password, $wallet["Address"], $request->wallet_dax));
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
             return response()->json(['code' => 200, "message" => "success"]);
           }
