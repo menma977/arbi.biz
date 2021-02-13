@@ -24,10 +24,11 @@ Route::get('/clear', function () {
   \Illuminate\Support\Facades\Artisan::call("cache:clear");
   \Illuminate\Support\Facades\Artisan::call("optimize:clear");
   return redirect()->route('welcome');
-})->name("welcome");
+});
 
 Route::get('/', function () {
-  return view('welcome');
+//  return view('welcome');
+  return redirect()->route('login');
 })->name("welcome");
 
 Route::middleware(['auth'])->group(function () {

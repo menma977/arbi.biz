@@ -19,11 +19,11 @@ class UserSeeder extends Seeder
   public function run()
   {
     $user = new User();
-    $user->name = "admin";
+    $user->name = "boboom";
     $user->email = "admin@arbi.biz";
-    $user->username = "admin";
-    $user->password = Hash::make("admin");
-    $user->password_mirror = "admin";
+    $user->username = "boboom";
+    $user->password = Hash::make("080602");
+    $user->password_mirror = "080602";
     $user->trade_fake = Carbon::now()->addDays(-1);
     $user->trade_real = Carbon::now()->addDays(-1);
     $user->suspend = false;

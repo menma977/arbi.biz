@@ -7,7 +7,7 @@
 
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>WALL Street</title>
+  <title>tradearbi.com</title>
   <link rel="shortcut icon" href="{{ asset('logo.png') }}" type="image/x-icon">
   <meta content='{{ asset('logo.png') }}' property='og:image'/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,7 +71,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Version</b> 0.0.1 BETA
     </div>
-    <strong>Copyright &copy; 2020 <a href="#">SEO Catalog</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2020 <a href="#">tradearbi.com</a>.</strong> All rights reserved.
   </footer>
 
 

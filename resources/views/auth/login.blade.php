@@ -3,7 +3,7 @@
 @section('content')
   <div class="login-box">
     <div class="login-logo">
-      <img src="{{ asset('logo.png') }}" alt="Wall Street" class="brand-image elevation-3" style="opacity: .8; width: 15%">
+      <img src="{{ asset('logo.png') }}" alt="tradearbi.com" class="brand-image elevation-3" style="opacity: .8; width: 15%">
       <a href="{{ route('welcome') }}"><b>Wall</b><small>Street</small></a>
     </div>
 

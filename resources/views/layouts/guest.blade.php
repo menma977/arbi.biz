@@ -8,7 +8,7 @@
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>WALL Street</title>
+  <title>tradearbi.com</title>
   <link rel="shortcut icon" href="{{ asset('logo.png') }}" type="image/x-icon">
   <meta content='{{ asset('logo.png') }}' property='og:image'/>
   <!-- Tell the browser to be responsive to screen width -->
@@ -60,15 +60,6 @@
       icon: 'success',
       title: @json(session()->get('message'))
     })
-    @endif
-
-    @if ($errors->any())
-    @foreach ($errors->all() as $error)
-    Toast.fire({
-      icon: 'error',
-      title: @json($error)
-    })
-    @endforeach
     @endif
   });
 </script>

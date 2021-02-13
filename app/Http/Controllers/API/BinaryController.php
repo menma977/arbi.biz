@@ -13,7 +13,7 @@ class BinaryController extends Controller
   public function index(Request $request)
   {
     $token = $request->bearerToken();
-    $binary = Binary::where('up_line', Auth::user()->id)->get();
+    $binary = Binary::where('sponsor', Auth::user()->id)->get();
     $binary->map(function ($item) {
       $item->userDownLine = User::find($item->down_line);
 
