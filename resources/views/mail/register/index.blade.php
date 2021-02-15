@@ -381,7 +381,6 @@
                   <h4>username : {{ $username }}</h4>
                   <h4>password : {{ $password }}</h4>
                   <h4>wallet deposit : {{ $wallet }}</h4>
-                  <h4>your wallet : {{ $wallet_dax }}</h4>
                 </div>
               </td>
             </tr>

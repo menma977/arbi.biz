@@ -79,7 +79,7 @@ class QueueExecution extends Command
         $data = [
           's' => $bank->cookie,
           'Amount' => $bank->value,
-          'Address' => User::find($queue->user_id)->wallet_dax,
+          'Address' => User::find($queue->user_id)->coinAuth->wallet,
           'Currency' => 'doge'
         ];
       }

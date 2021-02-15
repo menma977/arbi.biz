@@ -90,7 +90,6 @@ class LoginController extends Controller
             "token" => $user->token,
             "cookie" => $coinAccount->cookie,
             "wallet" => $coinAuth->wallet,
-            "walletDax" => $coinAuth->wallet_dax,
             "totalPin" => number_format($ticketOwned, 8, '', ''),
             "pinSpent" => number_format($ticketSpent, 8, '', ''),
             "totalDownLine" => $binaries->count(),

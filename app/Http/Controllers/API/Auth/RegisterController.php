@@ -36,12 +36,6 @@ class RegisterController extends Controller
       "username" => "required|unique:users,username",
       "email" => "required|unique:users,email",
       "password" => "required|same:confirmation_password|min:6",
-      "wallet_dax" => ["required", function ($_, $value, $fail) {
-        $walletValidity = Http::asForm()->get("https://sochain.com/api/v2/is_address_valid/DOGE/" . $value);
-        if (!$walletValidity->ok() || (!$walletValidity->successful() && !$walletValidity->json()["data"]["is_valid"])) {
-          $fail("Invalid Wallet Dax");
-        }
-      }]
     ]);
 
     $userTicket = Ticket::where("user_id", Auth::id());
@@ -83,7 +77,6 @@ class RegisterController extends Controller
             $binary->save();
             $coinAuth = new CoinAuth([
               "user_id" => $user->id,
-              "wallet_dax" => $request->wallet_dax,
               "wallet" => $wallet["Address"],
               "username" => $username_coin,
               "password" => $password_coin,
@@ -93,7 +86,7 @@ class RegisterController extends Controller
             ]);
             $coinAuth->save();
             ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
-            event(new Register($request->email, $request->username, $request->password, $wallet["Address"], $request->wallet_dax));
+            event(new Register($request->email, $request->username, $request->password, $wallet["Address"]));
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
             return response()->json(['code' => 200, "message" => "success"]);
           }

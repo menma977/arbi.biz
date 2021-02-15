@@ -52,7 +52,6 @@ class UserController extends Controller
       "lastTradeFake" => $user->trade_fake ? Carbon::parse($user->trade_fake)->format("d-m-y h:m:s") : false,
       "cookie" => $coinAuth->cookie,
       "wallet" => $coinAuth->wallet,
-      "walletDax" => $coinAuth->wallet_dax,
       "totalPin" => number_format($ticketOwned, 8, '', ''),
       "pinSpent" => number_format($ticketSpent, 8, '', ''),
       "totalDownLine" => $binaries->count(),
@@ -84,29 +83,6 @@ class UserController extends Controller
     $user->save();
 
     return response()->json(["message" => "name has been changed"]);
-  }
-
-  /**
-   * @param Request $request
-   * @return JsonResponse
-   * @throws ValidationException
-   */
-  public function updateWallet(Request $request): JsonResponse
-  {
-    $this->validate($request, [
-      "wallet" => ["required", function ($_, $value, $fail) {
-        $walletValidity = Http::asForm()->get("https://sochain.com/api/v2/is_address_valid/DOGE/" . $value);
-        if (!$walletValidity->ok() || (!$walletValidity->successful() && !$walletValidity->json()["data"]["is_valid"])) {
-          $fail("Invalid Wallet Dax");
-        }
-      }],
-    ]);
-
-    $user = User::find(Auth::id());
-    $user->wallet_dax = $request->input("wallet");
-    $user->save();
-
-    return response()->json(["message" => "wallet has been changed"]);
   }
 
   /**

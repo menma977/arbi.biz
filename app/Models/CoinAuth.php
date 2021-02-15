@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string password
  * @property string cookie
  * @property string wallet
- * @property string wallet_dax
  * @property string created_at
  * @property string updated_at
  */
@@ -38,7 +37,6 @@ class CoinAuth extends Model
     'password',
     'cookie',
     'wallet',
-    'wallet_dax',
   ];
 
   /**

@@ -20,7 +20,6 @@ class CreateCoinAuthsTable extends Migration
       $table->string('password');
       $table->text('cookie')->nullable();
       $table->text('wallet');
-      $table->text('wallet_dax');
       $table->timestamps();
     });
   }

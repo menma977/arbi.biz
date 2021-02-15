@@ -57,7 +57,7 @@ class WithdrawController extends Controller
     return HttpController::post("Withdraw", [
       "s" => $coinAuth->cookie,
       "Amount" => $amount,
-      "Address" => $coinAuth->wallet_dax,
+      "Address" => $coinAuth->wallet,
       "Currency" => "doge",
     ], true);
   }

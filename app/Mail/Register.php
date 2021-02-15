@@ -15,7 +15,6 @@ class Register extends Mailable
   protected $username;
   protected $password;
   protected $wallet;
-  protected $wallet_dax;
 
   /**
    * Create a new message instance.
@@ -24,15 +23,13 @@ class Register extends Mailable
    * @param $username
    * @param $password
    * @param $wallet
-   * @param $wallet_dax
    */
-  public function __construct($email, $username, $password, $wallet, $wallet_dax)
+  public function __construct($email, $username, $password, $wallet)
   {
     $this->email = $email;
     $this->username = $username;
     $this->password = $password;
     $this->wallet = $wallet;
-    $this->wallet_dax = $wallet_dax;
   }
 
   /**
@@ -49,7 +46,6 @@ class Register extends Mailable
         "username" => $this->username,
         "password" => $this->password,
         "wallet" => $this->wallet,
-        "wallet_dax" => $this->wallet_dax,
       ]);
   }
 }
