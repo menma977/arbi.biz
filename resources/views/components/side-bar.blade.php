@@ -26,6 +26,16 @@
             </p>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="{{ route('user.index') }}" class="nav-link {{ request()->is(['user', 'user/*']) ? 'active' : '' }}">
+            <i class="nav-icon fa fa-users"></i>
+            <p>
+              Users
+            </p>
+          </a>
+        </li>
+
         <li class="nav-item">
           <a href="{{ route('notification.index') }}" class="nav-link {{ request()->is(['notification', 'notification/*']) ? 'active' : '' }}">
             <i class="nav-icon fa fa-paper-plane"></i>
@@ -49,6 +59,15 @@
             <i class="nav-icon fa fas fa-wrench"></i>
             <p>
               Setting
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ route('binary.index') }}" class="nav-link {{ request()->is(['binary', 'binary/*']) ? 'active' : '' }}">
+            <i class="nav-icon fa fas fa-network-wired"></i>
+            <p>
+              Network
             </p>
           </a>
         </li>

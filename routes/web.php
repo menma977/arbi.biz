@@ -5,6 +5,7 @@ use App\Http\Controllers\BinaryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,11 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
   Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::get("", [DashboardController::class, 'index'])->name('index');
+  });
+
+  Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::get("index", [UserController::class, 'index'])->name('index');
+    Route::get("suspend/{id}", [UserController::class, 'suspend'])->name('suspend');
   });
 
   Route::group(['prefix' => 'notification', 'as' => 'notification.'], function () {

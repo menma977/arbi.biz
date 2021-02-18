@@ -37,7 +37,6 @@ class UserSeeder extends Seeder
     $coinAuth->username = "arbi.biz";
     $coinAuth->password = "123456789";
     $coinAuth->wallet = "DET3qfAoK6jkMd5fyBdBvHmLfjJ1mVGqTr";
-    $coinAuth->wallet_dax = "DDRXqgUdrmKW8xgtPMbM92HEAWBX3b867C";
     $coinAuth->save();
 
     $bank = new Bank();

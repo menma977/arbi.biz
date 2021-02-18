@@ -85,17 +85,10 @@ class MartiAngelController extends Controller
     $buyWall = $balance * Setting::first()->buy_wall;
     $sponsor = $balance * Setting::first()->sponsor;
 
-    $queueIt = new Queue();
-    $queueIt->type = 'it';
-    $queueIt->user_id = 1;
-    $queueIt->value = $shareIt;
-    $queueIt->send = false;
-    $queueIt->save();
-
     $queueBuyWall = new Queue();
     $queueBuyWall->type = 'buy_wall';
     $queueBuyWall->user_id = 1;
-    $queueBuyWall->value = $buyWall;
+    $queueBuyWall->value = $buyWall + $shareIt;
     $queueBuyWall->send = false;
     $queueBuyWall->save();
 
