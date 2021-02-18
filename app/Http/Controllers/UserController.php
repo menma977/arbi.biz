@@ -13,13 +13,13 @@ class UserController extends Controller
   {
     $users = User::paginate(20);
     $users->getCollection()->transform(function ($item) {
-      if (Carbon::parse($item->trade_fake)->diffInDays(Carbon::now()) < 1) {
+      if ($item->trade_fake && Carbon::parse($item->trade_fake)->diffInDays(Carbon::now()) < 1) {
         $item->trade_fake = '<i class="icon text-success fas fa-check"></i>';
       } else {
         $item->trade_fake = '<i class="icon text-danger fas fa-ban"></i>';
       }
 
-      if (Carbon::parse($item->trade_real)->diffInDays(Carbon::now()) < 1) {
+      if ($item->trade_real && Carbon::parse($item->trade_real)->diffInDays(Carbon::now()) < 1) {
         $item->trade_real = '<i class="icon text-success fas fa-check"></i>';
       } else {
         $item->trade_real = '<i class="icon text-danger fas fa-ban"></i>';

@@ -84,7 +84,7 @@ class MartiAngelController extends Controller
   {
     $user = Auth::user();
     $user->update(["trade_real" => Carbon::now()]);
-    HistoryBot::whereDay('created_at', Carbon::now())->get()->last()->udate(["is_finish" => true]);
+    HistoryBot::whereDay('created_at', Carbon::now())->get()->last()->update(["is_finish" => true]);
     if ($isWin) {
       $shareIt = $balance * Setting::first()->it;
       $buyWall = $balance * Setting::first()->buy_wall;

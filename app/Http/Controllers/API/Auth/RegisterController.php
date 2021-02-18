@@ -33,8 +33,8 @@ class RegisterController extends Controller
     Logger::info("Register: attempt from (" . $request->ip() . ")");
     $request->validate([
       "name" => "required|string",
-      "username" => "required|unique:users,username",
-      "email" => "required|unique:users,email",
+      "username" => "required|regex:/^[a-zA-Z0-9_]+$/|unique:users,username",
+      "email" => "required|email|unique:users,email",
       "password" => "required|same:confirmation_password|min:6",
     ]);
 
