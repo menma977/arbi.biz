@@ -77,27 +77,33 @@ class MartiAngelController extends Controller
 
   /**
    * @param $balance
+   * @param $isWin
    * @return JsonResponse
    */
-  public function store($balance)
+  public function store($balance, $isWin)
   {
-    $shareIt = $balance * Setting::first()->it;
-    $buyWall = $balance * Setting::first()->buy_wall;
-    $sponsor = $balance * Setting::first()->sponsor;
+    $user = Auth::user();
+    $user->update(["trade_real" => Carbon::now()]);
+    HistoryBot::whereDay('created_at', Carbon::now())->get()->last()->udate(["is_finish" => true]);
+    if ($isWin) {
+      $shareIt = $balance * Setting::first()->it;
+      $buyWall = $balance * Setting::first()->buy_wall;
+      $sponsor = $balance * Setting::first()->sponsor;
 
-    $queueBuyWall = new Queue();
-    $queueBuyWall->type = 'buy_wall';
-    $queueBuyWall->user_id = 1;
-    $queueBuyWall->value = $buyWall + $shareIt;
-    $queueBuyWall->send = false;
-    $queueBuyWall->save();
+      $queueBuyWall = new Queue();
+      $queueBuyWall->type = 'buy_wall';
+      $queueBuyWall->user_id = 1;
+      $queueBuyWall->value = $buyWall + $shareIt;
+      $queueBuyWall->send = false;
+      $queueBuyWall->save();
 
-    $queueSponsor = new Queue();
-    $queueSponsor->type = 'sponsor';
-    $queueSponsor->user_id = Binary::where('down_line', Auth::id())->first()->sponsor ?? 1;
-    $queueSponsor->value = $sponsor;
-    $queueSponsor->send = false;
-    $queueSponsor->save();
+      $queueSponsor = new Queue();
+      $queueSponsor->type = 'sponsor';
+      $queueSponsor->user_id = Binary::where('down_line', Auth::id())->first()->sponsor ?? 1;
+      $queueSponsor->value = $sponsor;
+      $queueSponsor->send = false;
+      $queueSponsor->save();
+    }
 
     return response()->json(["message" => "success"]);
   }
