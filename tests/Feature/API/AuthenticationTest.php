@@ -80,7 +80,6 @@ class AuthenticationTest extends TestCase
       "username" => "Agustin21",
       "password" => "A341@acE!s",
       "confirmation_password" => "A341@acE!s",
-      "wallet_dax" => ""
     ]);
     $response->assertStatus(200)->assertJson(['code' => 200, "message" => "success"]);
   }
@@ -94,7 +93,6 @@ class AuthenticationTest extends TestCase
       "username" => $user->username,
       "password" => "A341@acE!s",
       "confirmation_password" => "A341@acE!s",
-      "wallet_dax" => ""
     ]);
     $response->assertStatus(200)->assertJson(['code' => 200, "message" => "success"]);
   }
@@ -107,7 +105,6 @@ class AuthenticationTest extends TestCase
       "username" => "Agustin21",
       "password" => "A341@acE!s",
       "confirmation_password" => "A341@acE1s",
-      "wallet_dax" => ""
     ]);
     $response->assertStatus(200)->assertJson(['code' => 200, "message" => "success"]);
   }
@@ -120,7 +117,6 @@ class AuthenticationTest extends TestCase
       "username" => "Agustin21",
       "password" => "A341@acE!s",
       "confirmation_password" => "A341@acE!s",
-      "wallet_dax" => ""
     ]);
     $response->assertStatus(200)->assertJson(['code' => 200, "message" => "success"]);
   }
@@ -133,7 +129,6 @@ class AuthenticationTest extends TestCase
       "username" => "Agustin21",
       "password" => "A341@acE!s",
       "confirmation_password" => "A341@acE!s",
-      "wallet_dax" => ""
     ]);
     $response->assertStatus(200)->assertJson(['code' => 200, "message" => "success"]);
   }

@@ -113,6 +113,7 @@ class LoginController extends Controller
       return response()->json(["code" => 400, "message" => "Username and/or Password didn't match"], 400);
     } catch (Exception $e) {
       Logger::error('Login: [' . $e->getCode() . '] "' . $e->getMessage() . '" on line ' . $e->getTrace()[0]['line'] . ' of file ' . $e->getTrace()[0]['file']);
+      report($e)
       return response()->json(['code' => 500, "message" => "Something happen at our end"], 500);
     }
   }
