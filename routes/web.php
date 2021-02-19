@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
 
   Route::group(['prefix' => 'binary', 'as' => 'binary.'], function () {
     Route::get("index", [BinaryController::class, 'index'])->name('index');
-    Route::get("show", [BinaryController::class, 'show'])->name('show');
+    Route::get("show/{id}", [BinaryController::class, 'show'])->name('show');
   });
 
   Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
