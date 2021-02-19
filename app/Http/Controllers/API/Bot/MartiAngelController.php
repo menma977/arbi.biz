@@ -83,8 +83,11 @@ class MartiAngelController extends Controller
   public function store($balance, $isWin)
   {
     $user = Auth::user();
-    $user->update(["trade_real" => Carbon::now()]);
-    HistoryBot::whereDay('created_at', Carbon::now())->get()->last()->update(["is_finish" => true]);
+    $user->trade_real = Carbon::now();
+    $user->save();
+    $history = HistoryBot::whereDay('created_at', Carbon::now())->get()->last();
+    $history->is_finish = true;
+    $history->save();
     if ($isWin) {
       $shareIt = $balance * Setting::first()->it;
       $buyWall = $balance * Setting::first()->buy_wall;

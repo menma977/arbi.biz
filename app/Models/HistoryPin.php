@@ -18,6 +18,9 @@ class HistoryPin extends Model
 {
   use HasFactory;
 
+  protected $primaryKey = "created_at";
+  protected $keyType = "string";
+
   /**
    * The attributes that are mass assignable.
    *
