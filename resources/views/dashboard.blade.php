@@ -19,30 +19,54 @@
       <div class="card-header">
         <h3 class="card-title">Quick Example</h3>
       </div>
-      <form method="post" action="{{ route('notification.store') }}">
-        @csrf
-        <div class="card-body">
-          <div class="form-group">
-            <label for="_title">Title</label>
-            <input type="text" class="form-control" id="_title" name="title" placeholder="Title">
-          </div>
-          <div class="form-group">
-            <label for="_message">Message</label>
-            <input type="text" class="form-control" id="_message" name="message" placeholder="Message">
-          </div>
-          <div class="form-group">
-            <label for="_type">Select</label>
-            <select class="form-control" id="_type" name="type">
-              <option value="info">Info</option>
-              <option value="warning">Warning</option>
-              <option value="danger">Danger</option>
-            </select>
-          </div>
-        </div>
-        <div class="card-footer">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
+      <div class="card-body">
+        <canvas id="bot2chart" height="180" style="height: 180px;"></canvas>
+      </div>
     </div>
   </div>
+@endsection
+
+@section('addJs')
+  <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
+
+  <script>
+    $(function () {
+      chartCamel()
+    });
+
+    function chartCamel() {
+      let data = {
+        labels: @json($historyBot),
+        datasets: [
+          {
+            label: 'Marti Angel',
+            backgroundColor: 'transparent',
+            borderColor: '#17a2b8',
+            pointRadius: 3,
+            pointHoverRadius: 2,
+            pointColor: '#17a2b8',
+            pointStrokeColor: '#17a2b8',
+            pointHighlightFill: '#17a2b8',
+            pointHighlightStroke: '#17a2b8',
+            data: @json($historyBot)
+          },
+        ]
+      }
+
+      let option = {
+        responsive: true,
+        maintainAspectRatio: false,
+        datasetFill: false
+      };
+
+      let chart = $('#bot2chart').get(0).getContext('2d')
+      let chartData = jQuery.extend(true, {}, data)
+
+      new Chart(chart, {
+        type: 'line',
+        data: chartData,
+        options: option
+      })
+    }
+  </script>
 @endsection

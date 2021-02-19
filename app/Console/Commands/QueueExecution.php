@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Http\Controllers\HttpController;
 use App\Models\Bank;
 use App\Models\BuyWall;
-use App\Models\IT;
 use App\Models\Queue;
 use App\Models\User;
 use Carbon\Carbon;
@@ -30,7 +29,7 @@ class QueueExecution extends Command
   /**
    * Execute the console command.
    */
-  public function handle()
+  public function handle(): void
   {
     $queue = Queue::where('send', false)->where('created_at', '<=', Carbon::now())->first();
     if ($queue) {
@@ -43,42 +42,19 @@ class QueueExecution extends Command
         }
       }
 
-      $it = IT::find(1);
-      if (!$it->cookie || $it->updated_at <= Carbon::now()->addMonths(-1)) {
-        $getCookie = $this->getCookie($it->username, $it->password);
-        if ($getCookie !== "break") {
-          $it->cookie = $getCookie;
-          $it->save();
-        }
-      }
-
       $buy_wall = BuyWall::find(1);
-      if (!$buy_wall->cookie || $buy_wall->updated_at <= Carbon::now()->addMonths(-1)) {
-        $getCookie = $this->getCookie($buy_wall->username, $buy_wall->password);
-        if ($getCookie !== "break") {
-          $buy_wall->cookie = $getCookie;
-          $buy_wall->save();
-        }
-      }
 
-      if ($queue->type === "it") {
+      if ($queue->type === 'buy_wall') {
         $data = [
           's' => $bank->cookie,
-          'Amount' => $bank->value,
-          'Address' => $it->wallet,
-          'Currency' => 'doge'
-        ];
-      } else if ($queue->type === 'buy_wall') {
-        $data = [
-          's' => $bank->cookie,
-          'Amount' => $bank->value,
+          'Amount' => $queue->value,
           'Address' => $buy_wall->wallet,
           'Currency' => 'doge'
         ];
       } else {
         $data = [
           's' => $bank->cookie,
-          'Amount' => $bank->value,
+          'Amount' => $queue->value,
           'Address' => User::find($queue->user_id)->coinAuth->wallet,
           'Currency' => 'doge'
         ];
@@ -95,7 +71,12 @@ class QueueExecution extends Command
     }
   }
 
-  private function getCookie($username, $password)
+  /**
+   * @param $username
+   * @param $password
+   * @return string
+   */
+  private function getCookie($username, $password): string
   {
     $data = [
       'username' => $username,

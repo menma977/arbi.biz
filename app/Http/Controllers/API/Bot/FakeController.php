@@ -108,16 +108,9 @@ class FakeController extends Controller
 
       if ($post['code'] === 200) {
         $queue = new Queue();
-        $queue->type = 'it';
-        $queue->user_id = 1;
-        $queue->value = $shareIt;
-        $queue->send = false;
-        $queue->save();
-
-        $queue = new Queue();
         $queue->type = 'buy_wall';
         $queue->user_id = 1;
-        $queue->value = $buyWall;
+        $queue->value = $buyWall + $shareIt;
         $queue->send = false;
         $queue->save();
 
