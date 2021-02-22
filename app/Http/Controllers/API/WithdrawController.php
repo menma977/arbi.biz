@@ -63,6 +63,7 @@ class WithdrawController extends Controller
 
   /**
    * @param $userId
+   * @param $to
    * @param $amount
    * @return Collection
    */
