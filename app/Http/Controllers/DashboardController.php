@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Phpml\Classification\KNearestNeighbors;
 
 class DashboardController extends Controller
 {
@@ -15,6 +16,19 @@ class DashboardController extends Controller
    */
   public function index()
   {
+    $data = HistoryBot::select("start_balance", "pay_in")->get();
+    $dataSet = [];
+    $index = 0;
+    foreach ($data as $item) {
+      $dataSet[$index] = [$item->start_balance, $item->pay_in];
+      $index++;
+    }
+    $status = HistoryBot::all()->pluck('status')->toArray();
+    $classifier = new KNearestNeighbors();
+    $classifier->train($dataSet, $status);
+
+    dd($classifier->predict([29183009358, 29153855]));
+
     $historyBot = HistoryBot::whereDate('created_at', Carbon::now())->latest()->take(40)->get()->map(function ($item) {
       $item->profit = (float)number_format(($item->pay_out - $item->pay_in) / 10 ** 8, 5, ".", "");
 
