@@ -83,18 +83,16 @@
           let idUpLine = 0;
           let htmlBody = '';
           responseData.forEach(element => {
-            if (element.active === 1) {
-              idUpLine = element.sponsor;
-              let user = '<li>' +
-                '<a href="#" id="caret-'
-                + element.down_line.id
-                + '" class="fa fa-plus-circle" onclick="addCaret(`%data%`)" style="min-width: 200px"> '
-                + element.down_line.username
-                + '</a> <div id="' + element.down_line.id + '"></div>'
-                + '</li>';
-              user = user.replace('%data%', element.down_line.id);
-              htmlBody += '<ul class="nested active">' + user + '</ul>';
-            }
+            idUpLine = element.sponsor;
+            let user = '<li>' +
+              '<a href="#" id="caret-'
+              + element.down_line.id
+              + '" class="fa fa-plus-circle" onclick="addCaret(`%data%`)" style="min-width: 200px"> '
+              + element.down_line.username
+              + '</a> <div id="' + element.down_line.id + '"></div>'
+              + '</li>';
+            user = user.replace('%data%', element.down_line.id);
+            htmlBody += '<ul class="nested active">' + user + '</ul>';
           });
           document.getElementById(idUpLine).innerHTML = htmlBody;
         }).catch((error) => {

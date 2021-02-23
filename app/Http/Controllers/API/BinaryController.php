@@ -15,7 +15,7 @@ class BinaryController extends Controller
     $token = $request->bearerToken();
     $binary = Binary::where('sponsor', Auth::user()->id)->get();
     $binary->map(function ($item) {
-      $item->userDownLine = User::find($item->down_line);
+      $item->down_line = User::find($item->down_line);
 
       return $item;
     });

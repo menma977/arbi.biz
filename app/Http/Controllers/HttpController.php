@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class HttpController
 {
-  static private $key = "12650d1e50194d789bf03d22f90ecebe";
+  static private $key = "1b4755ced78e4d91bce9128b9a053cad";
 
   /**
    * @param $action
