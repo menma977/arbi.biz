@@ -6,6 +6,7 @@ use App\Helper\Logger;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ToolController;
+use App\Mail\ForgotPassword;
 use App\Mail\Register;
 use App\Models\Binary;
 use App\Models\CoinAuth;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -87,7 +89,7 @@ class RegisterController extends Controller
             ]);
             $coinAuth->save();
             ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
-            event(new Register($request->email, $request->username, $request->password, $wallet["Address"]));
+            Mail::to($request->email)->send(new Register($request->email, $request->username, $request->password, $wallet["Address"]));
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
             return response()->json(['code' => 200, "message" => "success"]);
           }
