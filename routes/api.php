@@ -42,6 +42,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::group(['prefix' => 'update', 'as' => 'update.'], function () {
       Route::post('name', [UserController::class, "updateName"]);
       Route::post('password', [UserController::class, "updatePassword"]);
+      Route::post('pin', [UserController::class, "updatePin"]);
     });
   });
 
