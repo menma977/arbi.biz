@@ -25,7 +25,7 @@ class UpdateListUrl extends Command
   /**
    * Execute the console command.
    */
-  public function handle()
+  public function handle(): void
   {
     $url = ListUrl::where('block', true)->where('updated_at', '<=', Carbon::now()->addMonths(-1))->first();
     if ($url) {

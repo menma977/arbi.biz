@@ -63,8 +63,9 @@ class FakeController extends Controller
     }
 
     $balancePool = self::getBalance($bank->cookie);
+    $userBalance = round($request->balance * 0.05);
     if ($balancePool["code"] === 200) {
-      if ($request->balance > ($balancePool["balance"] - Queue::where('send', false)->sum('value')) || $request->balance < (Setting::first()->min_bot)) {
+      if ($userBalance > ($balancePool["balance"] - Queue::where('send', false)->sum('value')) || $balancePool["balance"] < 1000) {
         $data = [
           's' => $coinAuth->cookie,
           'Amount' => $request->balance,
@@ -78,11 +79,11 @@ class FakeController extends Controller
             $receiveTicket = number_format(($getPrice["data"] * ($request->balance / 10 ** 8)) / 500000, 8, '.', '');
             ToolController::loseBot($user->id, $receiveTicket);
 
-            $user->trade_fake = Carbon::now();
+            $user->trade_fake = Carbon::now()->format("Y-m-d");
             $user->save();
 
-            $bot_one = $user->trade_fake == Carbon::now();
-            $bot_two = $user->trade_real == Carbon::now();
+            $bot_one = $user->trade_fake == Carbon::now()->format("Y-m-d");
+            $bot_two = $user->trade_real == Carbon::now()->format("Y-m-d");
             TredingEvent::dispatch(Auth::user()->username, $bot_one, $bot_two);
 
             return response()->json(['message' => "LOSE"]);
@@ -94,10 +95,10 @@ class FakeController extends Controller
         return response()->json(['message' => $post["message"]], 500);
       }
 
-      $shareIt = $balancePool["balance"] * Setting::first()->it;
-      $buyWall = $balancePool["balance"] * Setting::first()->buy_wall;
-      $sponsor = $balancePool["balance"] * Setting::first()->sponsor;
-      $remainingBalance = number_format($balancePool["balance"] - ($shareIt + $buyWall + $sponsor), 0, '', '');
+      $shareIt = $userBalance * Setting::first()->it;
+      $buyWall = $userBalance * Setting::first()->buy_wall;
+      $sponsor = $userBalance * Setting::first()->sponsor;
+      $remainingBalance = round($userBalance - ($shareIt + $buyWall + $sponsor));
 
       $post = HttpController::post('Withdraw', [
         's' => $bank->cookie,
@@ -121,11 +122,11 @@ class FakeController extends Controller
         $queue->send = false;
         $queue->save();
 
-        $user->trade_fake = Carbon::now();
+        $user->trade_fake = Carbon::now()->format("Y-m-d");
         $user->save();
 
-        $bot_one = $user->trade_real == Carbon::now();
-        $bot_two = $user->trade_real == Carbon::now();
+        $bot_one = Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) < 1;
+        $bot_two = Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) < 1;
         event(new TredingEvent(Auth::user()->username, $bot_one, $bot_two));
 
         return response()->json(['message' => "WIN"]);

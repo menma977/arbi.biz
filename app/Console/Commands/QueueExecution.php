@@ -9,6 +9,7 @@ use App\Models\Queue;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class QueueExecution extends Command
 {
@@ -60,10 +61,16 @@ class QueueExecution extends Command
         ];
       }
 
-      $post = HttpController::post("Withdraw", $data);
+      Log::info(collect($data));
 
+      $post = HttpController::post("Withdraw", $data);
       if ($post['code'] === 200) {
-        $queue->send = true;
+        Queue::where('created_at', $queue->created_at)
+          ->where('user_id', $queue->user_id)
+          ->where('value', $queue->value)
+          ->where('type', $queue->type)
+          ->first()
+          ->update(['send' => true]);
       } else {
         $queue->created_at = Carbon::now()->addMinutes(5)->format('Y-m-d H:i:s');
       }

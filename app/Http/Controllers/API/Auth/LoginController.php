@@ -41,7 +41,7 @@ class LoginController extends Controller
         Logger::info("Login: " . $request->username . " successful login from (" . $request->ip() . ")");
         if (Auth::user()->suspend) {
           Logger::info("Login: " . $request->ip() . " trying with suspended account " . $request->ip);
-          return response()->json(["code" => 400, "message" => "Your account currently suspended"] ,400);
+          return response()->json(["code" => 400, "message" => "Your account currently suspended"], 400);
         }
         foreach (Auth::user()->tokens as $id => $item) {
           $item->delete();

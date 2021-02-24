@@ -24,6 +24,8 @@ class MartiAngelController extends Controller
   public function index(Request $request): JsonResponse
   {
     $user = Auth::user();
+    $user->trade_real = Carbon::now()->format("Y-m-d");
+    $user->save();
     $this->validate($request, [
       'start_balance' => 'required|numeric',
       'end_balance' => 'required|numeric',
@@ -49,8 +51,6 @@ class MartiAngelController extends Controller
     $historyBot->status = $request->status;
     if ($historyBot->start_balance >= $historyBot->target_balance) {
       $historyBot->is_finish = true;
-      $user->trade_real = Carbon::now();
-      $user->save();
     } else {
       $historyBot->is_finish = false;
     }
@@ -80,12 +80,12 @@ class MartiAngelController extends Controller
    * @param $isWin
    * @return JsonResponse
    */
-  public function store($balance, $isWin)
+  public function store($balance, $isWin): JsonResponse
   {
     $user = Auth::user();
-    $user->trade_real = Carbon::now();
+    $user->trade_real = Carbon::now()->format("Y-m-d");
     $user->save();
-    $history = HistoryBot::whereDay('created_at', Carbon::now())->get()->last();
+    $history = HistoryBot::whereDay('created_at', Carbon::now())->where('user_id', $user->id)->get()->last();
     $history->is_finish = true;
     $history->save();
     if ($isWin) {

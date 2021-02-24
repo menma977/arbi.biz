@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
   {
     $schedule->command('queue_execution')->everyMinute()->withoutOverlapping();
     $schedule->command('update_list_url')->everyMinute()->withoutOverlapping();
+    $schedule->command('delete_queue')->daily()->withoutOverlapping();
   }
 
   /**
