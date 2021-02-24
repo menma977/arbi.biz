@@ -43,6 +43,7 @@ class UserController extends Controller
       "code" => 200,
       "username" => $user->username,
       "name" => $user->name,
+      "pin" => $user->pin,
       "email" => $user->email,
       "hasTradedReal" => Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) < 1,
       "hasTradedFake" => Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) < 1,
@@ -113,7 +114,7 @@ class UserController extends Controller
     ]);
 
     $user = User::find(Auth::id());
-    $user->pin = Hash::make($request->input("pin"));
+    $user->pin = $request->input("pin");
     $user->save();
 
     return response()->json(["message" => "pin has been changed"]);

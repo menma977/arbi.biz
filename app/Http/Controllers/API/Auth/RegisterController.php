@@ -35,7 +35,7 @@ class RegisterController extends Controller
       "username" => "required|regex:/^[a-zA-Z0-9_]+$/|unique:users,username",
       "email" => "required|email|unique:users,email",
       "password" => "required|same:confirmation_password|min:6",
-      "pin" => "required|numeric|same:confirmation_password|min:6",
+      "pin" => "required|numeric|same:confirmation_pin|min:6",
     ]);
 
     $userTicket = Ticket::where("user_id", Auth::id());
