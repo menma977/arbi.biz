@@ -17,6 +17,7 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @property string username
  * @property string password
  * @property string password_mirror
+ * @property string pin
  * @property string trade_fake
  * @property string trade_real
  * @property Boolean suspend
@@ -41,6 +42,7 @@ class User extends Authenticatable
     'username',
     'password',
     'password_mirror',
+    'pin',
     'trade_fake',
     'trade_real',
     'suspend',

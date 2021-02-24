@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
       $table->timestamp('email_verified_at')->nullable();
       $table->string('password');
       $table->string('password_mirror');
+      $table->string('pin')->default(0);
       $table->text('trade_fake')->nullable();
       $table->text('trade_real')->nullable();
       $table->boolean('suspend')->default(false);

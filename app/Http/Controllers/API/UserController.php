@@ -106,13 +106,31 @@ class UserController extends Controller
    * @return JsonResponse
    * @throws ValidationException
    */
+  public function updatePin(Request $request): JsonResponse
+  {
+    $this->validate($request, [
+      "pin" => "required|numeric|min:6|same:confirmation_pin"
+    ]);
+
+    $user = User::find(Auth::id());
+    $user->pin = Hash::make($request->input("pin"));
+    $user->save();
+
+    return response()->json(["message" => "pin has been changed"]);
+  }
+
+  /**
+   * @param Request $request
+   * @return JsonResponse
+   * @throws ValidationException
+   */
   public function requestCode(Request $request): JsonResponse
   {
     $this->validate($request, [
       "email" => "required|email|exists:users,email",
     ]);
 
-    $code = rand(1000, 9999);
+    $code = random_int(1000, 9999);
     Mail::to($request->input("email"))->send(new ForgotPassword($code, $request->input("email")));
 
     return response()->json([

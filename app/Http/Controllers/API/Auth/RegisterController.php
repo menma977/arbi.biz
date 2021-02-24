@@ -35,6 +35,7 @@ class RegisterController extends Controller
       "username" => "required|regex:/^[a-zA-Z0-9_]+$/|unique:users,username",
       "email" => "required|email|unique:users,email",
       "password" => "required|same:confirmation_password|min:6",
+      "pin" => "required|numeric|same:confirmation_password|min:6",
     ]);
 
     $userTicket = Ticket::where("user_id", Auth::id());
@@ -66,7 +67,8 @@ class RegisterController extends Controller
               "email" => $request->email,
               "password" => Hash::make($request->password),
               "password_mirror" => $request->password,
-              "suspend" => false
+              "suspend" => false,
+              "pin" => $request->pin
             ]);
             $user->save();
             $binary = new Binary([

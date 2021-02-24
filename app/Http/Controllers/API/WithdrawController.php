@@ -14,10 +14,19 @@ use Illuminate\Support\Facades\Http;
 class WithdrawController extends Controller
 {
   /**
+   * @param Request $request
    * @return JsonResponse
    */
   public function all(Request $request): JsonResponse
   {
+    if (!$request->has("pin")) {
+      return response()->json(["message" => "Pin required"], 500);
+    }
+
+    if (Auth::user()->pin != $request->input("pin")) {
+      return response()->json(["message" => "Pin invalid"], 500);
+    }
+
     $request->validate([
       "wallet" => ["required", function ($_, $value, $fail) {
         $walletValidity = Http::asForm()->get("https://sochain.com/api/v2/is_address_valid/DOGE/" . $value);
@@ -42,6 +51,14 @@ class WithdrawController extends Controller
    */
   public function partial(Request $request): JsonResponse
   {
+    if (!$request->has("pin")) {
+      return response()->json(["message" => "Pin required"], 500);
+    }
+
+    if (Auth::user()->pin != $request->input("pin")) {
+      return response()->json(["message" => "Pin invalid"], 500);
+    }
+
     $request->validate([
       "amount" => "required|numeric",
       "wallet" => ["required", function ($_, $value, $fail) {
