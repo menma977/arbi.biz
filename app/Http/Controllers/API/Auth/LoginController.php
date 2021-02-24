@@ -84,6 +84,7 @@ class LoginController extends Controller
             "code" => 200,
             "username" => $user->username,
             "email" => $user->email,
+            "pin" => $user->pin,
             "hasTradedReal" => Carbon::parse($user->trade_real ?: "last month")->diffInDays(Carbon::now()) < 1,
             "hasTradedFake" => Carbon::parse($user->trade_fake ?: "last month")->diffInDays(Carbon::now()) < 1,
             "isSuspended" => $user->suspend,
