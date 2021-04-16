@@ -89,7 +89,11 @@ class RegisterController extends Controller
             ]);
             $coinAuth->save();
             ToolController::register(Auth::id(), $this->PIN_SPENT_ON_REGISTER, $user->username);
-            Mail::to($request->email)->send(new Register($request->email, $request->username, $request->password, $wallet["Address"]));
+            try {
+              Mail::to($request->email)->send(new Register($request->email, $request->username, $request->password, $wallet["Address"]));
+            }catch(Exception $e){
+              Logger::info("Register: " . $e);
+            }
             Logger::info("Register: " . $request->username . " from (" . $request->ip() . ") Registered successfully");
             return response()->json(['code' => 200, "message" => "success"]);
           }
